@@ -8,8 +8,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDistance;
-
 @TeleOp(name="Test", group="Linear Opmode")
 public class TestTele extends LinearOpMode {
 

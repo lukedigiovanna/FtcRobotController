@@ -33,11 +33,11 @@ public class MainTeleOp extends LinearOpMode {
     public void runOpMode() {
         RobotHardware robot = new RobotHardware(this.hardwareMap);
 
-        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-            initTfod();
-        } else {
-            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
-        }
+//        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+//            initTfod();
+//        } else {
+//            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+//        }
 
         /**
          * Activate TensorFlow Object Detection before we wait for the start command.

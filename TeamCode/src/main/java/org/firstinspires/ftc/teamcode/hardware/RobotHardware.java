@@ -201,8 +201,8 @@ public class RobotHardware {
 
     double loadingTime = 0.5;
     double retractTime = 0;
-    double loadedPosition = 0.8;
-    double storingPosition = 0.15;
+    double loadedPosition = 0.1;
+    double storingPosition = 0.6;
     public void loadRing(boolean load, double elapsed)  {
         if(load && retractTime < elapsed && currentFlyPower != 0)    {
             loadingServo.setPosition(loadedPosition);
@@ -216,7 +216,7 @@ public class RobotHardware {
     double currentFlyPower = 0;
     public void setFlywheelPower(double power)  {
         flywheel.setPower(power);
-        currentPower = power;
+        currentFlyPower = power;
     }
 
     /**
