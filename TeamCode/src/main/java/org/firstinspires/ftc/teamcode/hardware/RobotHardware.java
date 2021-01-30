@@ -201,8 +201,8 @@ public class RobotHardware {
 
     double loadingTime = 0.5;
     double retractTime = 0;
-    double loadedPosition = 0.1;
-    double storingPosition = 0.6;
+    double loadedPosition = 0.0;
+    double storingPosition = 0.45;
     public void loadRing(boolean load, double elapsed)  {
         if(load && retractTime < elapsed && currentFlyPower != 0)    {
             loadingServo.setPosition(loadedPosition);
