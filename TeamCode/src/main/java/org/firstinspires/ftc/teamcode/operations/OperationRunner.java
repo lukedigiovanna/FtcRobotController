@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.operations;
 
 import org.firstinspires.ftc.teamcode.hardware.MainRobotDep;
+import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
 
 public class OperationRunner {
     private Operation currentOperation;
@@ -12,7 +13,7 @@ public class OperationRunner {
 
     private boolean isOver;
 
-    public void operate(MainRobotDep robot) {
+    public void operate(RobotHardware robot) {
         if (isOver)
             return; // do nothing if we are done operating.
 

@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -16,7 +17,7 @@ import org.firstinspires.ftc.teamcode.utils.Vector;
 // Epic Code ✅✅✅
 public class RobotHardware {
 
-    private DcMotor backLeftDrive, backRightDrive, frontRightDrive, frontLeftDrive;
+    public DcMotor backLeftDrive, backRightDrive, frontRightDrive, frontLeftDrive;
     private DcMotor flywheel;
     private DcMotor largeRollers, smallRollers;
     private Servo loadingServo;
@@ -29,8 +30,8 @@ public class RobotHardware {
     private double targetAngle = 0;
 
     public static double
-            TICKS_PER_REV = 537.6,
-            GEAR_REDUCTION = 1.0,
+            TICKS_PER_REV = 383.6,
+            GEAR_REDUCTION = 2.0,
             WHEEL_DIAMETER_INCHES = 3.858,
             TICKS_PER_INCH = (TICKS_PER_REV * GEAR_REDUCTION)/(WHEEL_DIAMETER_INCHES * Math.PI);
 
@@ -72,6 +73,24 @@ public class RobotHardware {
         backLeftDrive.setPower(Range.clip(bl,-1.0,1.0));
         frontRightDrive.setPower(Range.clip(fr,-1.0,1.0));
         backRightDrive.setPower(Range.clip(br,-1.0,1.0));
+    }
+
+    private double protect(double in) {
+        if (Math.abs(in) < 0.1) {
+            if (in < 0)
+                return -0.1;
+            else
+                return 0.1;
+        } else {
+            return in;
+        }
+    }
+
+    public void setProtectedPower(double bl, double fl, double br, double fr) {
+        frontLeftDrive.setPower(Range.clip(protect(bl),-1.0,1.0));
+        backLeftDrive.setPower(Range.clip(protect(fl),-1.0,1.0));
+        frontRightDrive.setPower(Range.clip(protect(br),-1.0,1.0));
+        backRightDrive.setPower(Range.clip(protect(fr),-1.0,1.0));
     }
 
     public double targetWaitTime = 0;
@@ -125,6 +144,13 @@ public class RobotHardware {
 
     public void stopChassis() {
         driveWheels(0,0,0,0);
+    }
+
+    public void printEncoderPositions(Telemetry telemetry) {
+        telemetry.addData("left front","%7d/%7d",this.frontLeftDrive.getCurrentPosition(),this.frontLeftDrive.getTargetPosition());
+        telemetry.addData("right front","%7d/%7d",this.frontRightDrive.getCurrentPosition(),this.frontRightDrive.getTargetPosition());
+        telemetry.addData("left back","%7d/%7d",this.backLeftDrive.getCurrentPosition(),this.backLeftDrive.getTargetPosition());
+        telemetry.addData("right back","%7d/%7d",this.backRightDrive.getCurrentPosition(),this.backRightDrive.getTargetPosition());
     }
 
     public void clearEncoders() {
