@@ -19,9 +19,58 @@ public class LB_Autonomous extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        MoveOperation move10inches = new MoveOperation("moving 10 inches", robot, 60, 0.5, 10);
+        MoveOperation moveToShoot = new MoveOperation("moving to shoot", robot, 60, 0.5, 10);
+        Operation setFlyPower = new Operation("setting power", robot, 1) {
+            public int operate() {
+                robot.setFlywheelPower(RobotHardware.DEFAULT_FLYWHEEL_POWER);
+                return -1;
+            }
+        };
+        Operation shootRing1 = new Operation("shooting ring 1", robot, 1) {
+            @Override
+            public int operate() {
+                robot.forceLoadRing();
+                return -1;
+            }
+        };
+        Operation bringBumperBack1 = new Operation("unload ring 1", robot, 2) {
+            @Override
+            public int operate() {
+                robot.forceUnloadRing();
+                return -1;
+            }
+        };
+        Operation shootRing2 = new Operation("shooting ring 2", robot, 1) {
+            @Override
+            public int operate() {
+                robot.forceLoadRing();
+                return -1;
+            }
+        };
+        Operation bringBumperBack2 = new Operation("unload ring 2", robot, 2) {
+            @Override
+            public int operate() {
+                robot.forceUnloadRing();
+                return -1;
+            }
+        };
+        MoveOperation goToLine = new MoveOperation("parking", robot, 14, 0.5, 10);
+        Operation dropWobble = new Operation("drop wobble", robot, 4) {
+            public int operate() {
+                robot.setFlywheelPower(0);
+                robot.raiseWobble();
+                return -1;
+            }
+        };
 
-        OperationRunner opRun = new OperationRunner(move10inches);
+        OperationRunner opRun = new OperationRunner(moveToShoot);
+        moveToShoot.linkOperation(setFlyPower);
+        setFlyPower.linkOperation(shootRing1);
+        shootRing1.linkOperation(bringBumperBack1);
+        bringBumperBack1.linkOperation(shootRing2);
+        shootRing2.linkOperation(bringBumperBack2);
+        bringBumperBack2.linkOperation(goToLine);
+        goToLine.linkOperation(dropWobble);
         waitForStart();
         runtime.reset();
         double last = runtime.milliseconds();

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.operations;
 
+import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.utils.*;
 import org.firstinspires.ftc.teamcode.utils.Timer;
 
@@ -11,12 +12,14 @@ public abstract class Operation {
     private String display;
     private float maxRuntime;
     private Timer timer;
+    protected RobotHardware robot;
 
-    public Operation(String display, float maxRuntime) {
+    public Operation(String display, RobotHardware robot, float maxRuntime) {
         this.display = display;
         this.maxRuntime = maxRuntime;
         this.linkedOperations = new ArrayList<Operation>();
         this.timer = new Timer();
+        this.robot = robot;
     }
 
     /**

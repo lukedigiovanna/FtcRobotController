@@ -13,7 +13,7 @@ public class MoveOperation extends Operation {
     private int addtTicks;
 
     public MoveOperation(String display, RobotHardware robot, double inches, double power, float timeout) {
-        super(display, timeout);
+        super(display, robot, timeout);
         this.robot = robot;
         this.power = power;
         this.inches = inches;

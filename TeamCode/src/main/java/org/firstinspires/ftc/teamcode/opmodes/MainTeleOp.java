@@ -15,10 +15,11 @@ public class MainTeleOp extends LinearOpMode {
      
     private final double driveSpeed = 1;
     private final double slowSpeed = 0.25;
-    private final double flywheelSpeed = -0.75;
+    private final double flywheelSpeed = RobotHardware.DEFAULT_FLYWHEEL_POWER;
 
     boolean rightDpadClicked = false;
     boolean leftDpadClicked = false;
+    boolean yDown = false;
 
     private static final String VUFORIA_KEY =
             "Ac2AtL3/////AAABmYlEA5vrzUAniNdkaz817jg5a+xF1YvwBoaBFx+vfaoen8b7Lc/Paztzjnd1sdgsk6wIkrl5cNjZPf06xjN3DiUFwor9Va5+Dvl+JgYtaPWnCyKshUYEyIfXPnuYZQHlx2PNAp19T7QLPo1+Ks/GLK6Hi+z9bkt7Xdj91Ts9cw3U0NNK70YkR8RqakswKy673hKimeZblke+pKR94EOIQs+V99sua2mAcfBliwjSZxlyP7FCI+55kaCVYMi7+qYEmVl4D4NGi86VDyQzyG5rBYvOgaE4v8PXNSmkQH1BlV88WdOXEgvRvWmQoOMpFZ28bsuEmL6vz8fa9m4gdABsyO8AYPIOz6Lh+xalVXMmMln4";
@@ -95,7 +96,18 @@ public class MainTeleOp extends LinearOpMode {
 
             robot.loadRing(gamepad1.left_bumper, runtime.seconds());
 
-            telemetry.addData("fuck",robot.targetWaitTime);
+            if (!yDown && gamepad1.y) {
+                yDown = true;
+                robot.toggleWobble();
+            }
+            else if (!gamepad1.y) yDown = false;
+
+            robot.setSlidePower(0);
+            if (gamepad1.dpad_up) {
+                robot.setSlidePower(1);
+            } else if (gamepad1.dpad_down) {
+                robot.setSlidePower(-1);
+            }
 
             telemetry.update();
         }

@@ -20,7 +20,8 @@ public class RobotHardware {
     public DcMotor backLeftDrive, backRightDrive, frontRightDrive, frontLeftDrive;
     private DcMotor flywheel;
     private DcMotor largeRollers, smallRollers;
-    private Servo loadingServo;
+    private DcMotor slideDrive;
+    private Servo loadingServo, wobbleServo;
 
     // IMU
     private BNO055IMU imu;
@@ -34,6 +35,8 @@ public class RobotHardware {
             GEAR_REDUCTION = 2.0,
             WHEEL_DIAMETER_INCHES = 3.858,
             TICKS_PER_INCH = (TICKS_PER_REV * GEAR_REDUCTION)/(WHEEL_DIAMETER_INCHES * Math.PI);
+
+    public static final double DEFAULT_FLYWHEEL_POWER = -0.8;
 
     public RobotHardware(HardwareMap hardware) {
         frontLeftDrive  = hardware.get(DcMotor.class, "front_left_chassis");
@@ -56,6 +59,10 @@ public class RobotHardware {
         flywheel = hardware.get(DcMotor.class, "flywheel");
 
         loadingServo = hardware.get(Servo.class, "reload_servo");
+        wobbleServo = hardware.get(Servo.class, "wobble_servo");
+
+        slideDrive = hardware.get(DcMotor.class, "slide_drive");
+        slideDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         imu = hardware.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -114,8 +121,8 @@ public class RobotHardware {
             fixTurn = 0.7 * dir;
         }
         turn += fixTurn;
-        double backLeftPower   = Range.clip((drive + turn - strafe) * speed, -1.0, 1.0);
-        double frontLeftPower  = Range.clip((drive + turn + strafe) * speed, -1.0, 1.0);
+        double backLeftPower   = Range.clip((drive + turn + strafe) * speed, -1.0, 1.0);
+        double frontLeftPower  = Range.clip((drive + turn - strafe) * speed, -1.0, 1.0);
         double backRightPower  = Range.clip((drive - turn - strafe) * speed, -1.0, 1.0);
         double frontRightPower = Range.clip((drive - turn + strafe) * speed, -1.0, 1.0);
         this.driveWheels(backLeftPower, frontLeftPower, backRightPower, frontRightPower);
@@ -239,10 +246,37 @@ public class RobotHardware {
         }
     }
 
+    public void forceLoadRing() {
+        loadingServo.setPosition(loadedPosition);
+    }
+
+    public void forceUnloadRing() {
+        loadingServo.setPosition(storingPosition);
+    }
+
     double currentFlyPower = 0;
     public void setFlywheelPower(double power)  {
         flywheel.setPower(power);
         currentFlyPower = power;
+    }
+
+    public void toggleWobble() {
+        if (wobbleServo.getPosition() > 0.5)
+            raiseWobble();
+        else
+            lowerWobble();
+    }
+
+    public void lowerWobble() {
+        wobbleServo.setPosition(1.0);
+    }
+
+    public void raiseWobble() {
+        wobbleServo.setPosition(0.0);
+    }
+
+    public void setSlidePower(double power) {
+        slideDrive.setPower(power);
     }
 
     /**
