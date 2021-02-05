@@ -42,7 +42,7 @@ public abstract class Operation {
      * Return of 0 to ... indicates the next operation in the list to run
      * @return
      */
-    public abstract int operate();
+    public abstract int operate(double dt);
 
     /**
      * Adds the operation to the end of the list.

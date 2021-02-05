@@ -7,7 +7,7 @@ public class WaitOperation extends Operation {
         super("waiting...", robot, maxRuntime);
     }
 
-    public int operate() {
+    public int operate(double dt) {
         return -1;
     }
 }

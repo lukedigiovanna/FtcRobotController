@@ -141,6 +141,10 @@ public class RobotHardware {
             targetAngle -= Math.PI * 2;
     }
 
+    public void changeTurnAngleDegrees(double degrees) {
+        changeTurnAngle(Math.toRadians(degrees));
+    }
+
     public void driveForward(double power) {
         driveWheels(power, power, power, power);
     }

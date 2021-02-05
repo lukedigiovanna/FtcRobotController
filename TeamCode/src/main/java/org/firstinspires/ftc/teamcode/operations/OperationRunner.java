@@ -12,7 +12,7 @@ public class OperationRunner {
 
     private boolean isOver;
 
-    public void operate(RobotHardware robot) {
+    public void operate(RobotHardware robot, double dt) {
         if (isOver)
             return; // do nothing if we are done operating.
 
@@ -20,7 +20,7 @@ public class OperationRunner {
             currentOperation.init();
             hasFirstInitialized = true;
         }
-        int result = currentOperation.operate();
+        int result = currentOperation.operate(dt);
         if (result == -1 && currentOperation.isTimerDone())
             result = 0;
         if (result > -1) { // if the current operation is done, move on to the next one

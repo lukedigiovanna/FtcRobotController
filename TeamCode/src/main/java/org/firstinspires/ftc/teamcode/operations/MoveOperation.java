@@ -47,7 +47,7 @@ public class MoveOperation extends Operation {
         robot.frontRightDrive.setPower(power);
     }
 
-    public int operate() {
+    public int operate(double dt) {
         if (!this.robot.driveIsBusy())
             return 0;
         else    {
