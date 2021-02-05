@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.operations;
 
-import org.firstinspires.ftc.teamcode.hardware.MainRobotDep;
 import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
 
 public class OperationRunner {
@@ -40,6 +39,6 @@ public class OperationRunner {
         if (isOver)
             return "Complete!";
         else
-            return this.currentOperation.getDisplay();
+            return this.currentOperation.getDisplayName();
     }
 }

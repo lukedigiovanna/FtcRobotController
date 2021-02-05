@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
-import android.app.job.JobInfo;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -13,7 +11,7 @@ import org.firstinspires.ftc.teamcode.operations.OperationRunner;
 import org.firstinspires.ftc.teamcode.operations.TurnOperation;
 
 @Autonomous(name="Left Blue Auto", group="Linear Opmode")
-public class LB_Autonomous extends LinearOpMode {
+public class RR_Autonomous extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     public void runOpMode() {
@@ -23,7 +21,7 @@ public class LB_Autonomous extends LinearOpMode {
         telemetry.update();
 
         MoveOperation moveToShoot = new MoveOperation("moving to shoot", robot, 60, 0.5, 10);
-        TurnOperation turnToGoal = new TurnOperation("turning to shoot", robot, 2, 15, 0.5);
+        TurnOperation turnToGoal = new TurnOperation("turning to shoot", robot, 2, -15, 0.5);
         Operation setFlyPower = new Operation("setting power", robot, 1) {
             public int operate() {
                 robot.setFlywheelPower(RobotHardware.DEFAULT_FLYWHEEL_POWER);
@@ -58,8 +56,8 @@ public class LB_Autonomous extends LinearOpMode {
                 return -1;
             }
         };
-        TurnOperation turnToLine = new TurnOperation("turning to shoot", robot, 2, -15, 0.5);
-        MoveOperation goToLine = new MoveOperation("parking", robot, 14, 0.5, 10);
+        TurnOperation turnToLine = new TurnOperation("turning to shoot", robot, 2, -165, 0.5);
+        MoveOperation goToLine = new MoveOperation("parking", robot, -14, 0.5, 10);
         Operation dropWobble = new Operation("drop wobble", robot, 4) {
             public int operate() {
                 robot.setFlywheelPower(0);

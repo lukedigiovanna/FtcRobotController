@@ -8,13 +8,11 @@ import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.hardware.RobotHardwareDep;
 
 public class MoveOperation extends Operation {
-    private RobotHardware robot;
     private double inches, power;
     private int addtTicks;
 
     public MoveOperation(String display, RobotHardware robot, double inches, double power, float timeout) {
         super(display, robot, timeout);
-        this.robot = robot;
         this.power = power;
         this.inches = inches;
         this.addtTicks = (int)(this.inches * RobotHardware.TICKS_PER_INCH);

@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.operations;
 
 import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
-import org.firstinspires.ftc.teamcode.utils.*;
 import org.firstinspires.ftc.teamcode.utils.Timer;
 
 import java.util.*;
@@ -9,13 +8,13 @@ import java.util.*;
 public abstract class Operation {
     
     private List<Operation> linkedOperations;
-    private String display;
+    private String displayName;
     private float maxRuntime;
     private Timer timer;
     protected RobotHardware robot;
 
-    public Operation(String display, RobotHardware robot, float maxRuntime) {
-        this.display = display;
+    public Operation(String displayName, RobotHardware robot, float maxRuntime) {
+        this.displayName = displayName;
         this.maxRuntime = maxRuntime;
         this.linkedOperations = new ArrayList<Operation>();
         this.timer = new Timer();
@@ -48,7 +47,6 @@ public abstract class Operation {
     /**
      * Adds the operation to the end of the list.
      * The first one will be of index 0
-     * @param op
      */
     public void linkOperation(Operation op) {
         this.linkedOperations.add(op);
@@ -62,7 +60,7 @@ public abstract class Operation {
         return linkedOperations.get(index);
     }
 
-    public String getDisplay() {
-        return this.display;
+    public String getDisplayName() {
+        return this.displayName;
     }
 }
