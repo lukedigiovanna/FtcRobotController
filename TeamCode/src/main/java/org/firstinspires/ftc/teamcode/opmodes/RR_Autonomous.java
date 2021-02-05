@@ -23,35 +23,35 @@ public class RR_Autonomous extends LinearOpMode {
         MoveOperation moveToShoot = new MoveOperation("moving to shoot", robot, 60, 0.5, 10);
         TurnOperation turnToGoal = new TurnOperation("turning to shoot", robot, 2, -15, 0.5);
         Operation setFlyPower = new Operation("setting power", robot, 1) {
-            public int operate() {
+            public int operate(double dt) {
                 robot.setFlywheelPower(RobotHardware.DEFAULT_FLYWHEEL_POWER);
                 return -1;
             }
         };
         Operation shootRing1 = new Operation("shooting ring 1", robot, 1) {
             @Override
-            public int operate() {
+            public int operate(double dt) {
                 robot.forceLoadRing();
                 return -1;
             }
         };
         Operation bringBumperBack1 = new Operation("unload ring 1", robot, 2) {
             @Override
-            public int operate() {
+            public int operate(double dt) {
                 robot.forceUnloadRing();
                 return -1;
             }
         };
         Operation shootRing2 = new Operation("shooting ring 2", robot, 1) {
             @Override
-            public int operate() {
+            public int operate(double dt) {
                 robot.forceLoadRing();
                 return -1;
             }
         };
         Operation bringBumperBack2 = new Operation("unload ring 2", robot, 2) {
             @Override
-            public int operate() {
+            public int operate(double dt) {
                 robot.forceUnloadRing();
                 return -1;
             }
@@ -59,7 +59,7 @@ public class RR_Autonomous extends LinearOpMode {
         TurnOperation turnToLine = new TurnOperation("turning to shoot", robot, 2, -165, 0.5);
         MoveOperation goToLine = new MoveOperation("parking", robot, -14, 0.5, 10);
         Operation dropWobble = new Operation("drop wobble", robot, 4) {
-            public int operate() {
+            public int operate(double dt) {
                 robot.setFlywheelPower(0);
                 robot.raiseWobble();
                 return -1;
@@ -87,7 +87,7 @@ public class RR_Autonomous extends LinearOpMode {
 
             telemetry.addData("Delta Time", dt);
 
-            opRun.operate(robot);
+            opRun.operate(robot, dt);
 
             robot.printEncoderPositions(telemetry);
             telemetry.addData("Runner Status",opRun.getCurrentDisplay());
