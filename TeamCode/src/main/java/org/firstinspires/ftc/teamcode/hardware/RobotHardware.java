@@ -286,11 +286,11 @@ public class RobotHardware {
     }
 
     public void lowerWobble() {
-        wobbleServo.setPosition(1.0);
+        wobbleServo.setPosition(0.2);
     }
 
     public void raiseWobble() {
-        wobbleServo.setPosition(0.0);
+        wobbleServo.setPosition(1.0);
     }
 
     public void setSlidePower(double power) {

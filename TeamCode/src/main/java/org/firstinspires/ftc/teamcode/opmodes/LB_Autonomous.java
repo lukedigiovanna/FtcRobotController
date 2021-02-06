@@ -92,7 +92,7 @@ public class LB_Autonomous extends LinearOpMode {
         Operation dropWobble = new Operation("drop wobble", robot, 4) {
             public int operate(double dt) {
                 robot.setFlywheelPower(0);
-                robot.raiseWobble();
+                robot.lowerWobble();
                 return -1;
             }
         };
