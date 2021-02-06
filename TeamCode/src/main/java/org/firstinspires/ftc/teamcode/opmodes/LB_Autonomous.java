@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.operations.MoveOperation;
 import org.firstinspires.ftc.teamcode.operations.Operation;
 import org.firstinspires.ftc.teamcode.operations.OperationRunner;
+import org.firstinspires.ftc.teamcode.operations.StrafeOperation;
 import org.firstinspires.ftc.teamcode.operations.TurnOperation;
 
 @Autonomous(name="Left Blue Auto", group="Linear Opmode")
@@ -23,7 +24,7 @@ public class LB_Autonomous extends LinearOpMode {
         telemetry.update();
 
         MoveOperation moveToShoot = new MoveOperation("moving to shoot", robot, 60, 0.5, 10);
-        TurnOperation turnToGoal = new TurnOperation("turning to shoot", robot, 2, 15, 0.5);
+        StrafeOperation strafeToShoot = new StrafeOperation("strafing to shoot", robot, 8, 0.5, 10);
         Operation setFlyPower = new Operation("setting power", robot, 1) {
             public int operate(double dt) {
                 robot.setFlywheelPower(RobotHardware.DEFAULT_FLYWHEEL_POWER);
@@ -97,8 +98,8 @@ public class LB_Autonomous extends LinearOpMode {
         };
 
         OperationRunner opRun = new OperationRunner(moveToShoot);
-        moveToShoot.linkOperation(turnToGoal);
-        turnToGoal.linkOperation(setFlyPower);
+        moveToShoot.linkOperation(strafeToShoot);
+        strafeToShoot.linkOperation(setFlyPower);
         setFlyPower.linkOperation(shootRing1);
         shootRing1.linkOperation(bringBumperBack1);
         bringBumperBack1.linkOperation(shootRing2);
@@ -107,8 +108,7 @@ public class LB_Autonomous extends LinearOpMode {
         runRollers.linkOperation(stopRollers);
         stopRollers.linkOperation(shootRing3);
         shootRing3.linkOperation(bringBumperBack3);
-        bringBumperBack3.linkOperation(turnToLine);
-        turnToLine.linkOperation(goToLine);
+        bringBumperBack3.linkOperation(goToLine);
         goToLine.linkOperation(dropWobble);
         waitForStart();
         runtime.reset();

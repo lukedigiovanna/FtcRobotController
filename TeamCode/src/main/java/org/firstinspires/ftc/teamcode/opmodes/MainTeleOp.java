@@ -109,6 +109,8 @@ public class MainTeleOp extends LinearOpMode {
                 robot.setSlidePower(-1);
             }
 
+            robot.printRingDistance(telemetry);
+
             telemetry.update();
         }
     }

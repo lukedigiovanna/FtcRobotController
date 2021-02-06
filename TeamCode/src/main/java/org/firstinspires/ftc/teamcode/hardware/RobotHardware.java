@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -11,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import org.firstinspires.ftc.teamcode.utils.Vector;
@@ -22,6 +25,8 @@ public class RobotHardware {
     private DcMotor largeRollers, smallRollers;
     private DcMotor slideDrive;
     private Servo loadingServo, wobbleServo;
+
+    private RevColorSensorV3 colorDistance;
 
     // IMU
     private BNO055IMU imu;
@@ -64,6 +69,8 @@ public class RobotHardware {
         slideDrive = hardware.get(DcMotor.class, "slide_drive");
         slideDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        colorDistance = hardware.get(RevColorSensorV3.class, "color_distance");
+
         imu = hardware.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.mode = BNO055IMU.SensorMode.IMU;
@@ -91,6 +98,13 @@ public class RobotHardware {
         } else {
             return in;
         }
+    }
+
+//    public String getRingType() {
+//
+//    }
+    public void printRingDistance(Telemetry telemetry) {
+        telemetry.addData("ring distance: ",colorDistance.getDistance(DistanceUnit.INCH));
     }
 
     public void setProtectedPower(double bl, double fl, double br, double fr) {
