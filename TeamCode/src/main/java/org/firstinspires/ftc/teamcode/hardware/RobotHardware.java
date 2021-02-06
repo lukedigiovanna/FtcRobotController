@@ -36,7 +36,7 @@ public class RobotHardware {
             WHEEL_DIAMETER_INCHES = 3.858,
             TICKS_PER_INCH = (TICKS_PER_REV * GEAR_REDUCTION)/(WHEEL_DIAMETER_INCHES * Math.PI);
 
-    public static final double DEFAULT_FLYWHEEL_POWER = -0.8;
+    public static final double DEFAULT_FLYWHEEL_POWER = -0.75;
 
     public RobotHardware(HardwareMap hardware) {
         frontLeftDrive  = hardware.get(DcMotor.class, "front_left_chassis");

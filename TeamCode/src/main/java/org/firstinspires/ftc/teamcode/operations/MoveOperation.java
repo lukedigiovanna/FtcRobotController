@@ -51,14 +51,6 @@ public class MoveOperation extends Operation {
         if (!this.robot.driveIsBusy())
             return 0;
         else    {
-//            robot.backLeftDrive.setPower(+0.1);
-//            robot.frontLeftDrive.setPower(+0.1);
-//            robot.backRightDrive.setPower(+0.1);
-//            robot.frontRightDrive.setPower(+0.1);
-//            robot.setProtectedPower(((blTarget - robot.backLeftDrive.getCurrentPosition())/(double)addtTicks)*power,
-//                    ((flTarget - robot.frontLeftDrive.getCurrentPosition())/(double)addtTicks)*power,
-//                    ((brTarget - robot.backRightDrive.getCurrentPosition())/(double)addtTicks)*power,
-//                    ((frTarget - robot.frontRightDrive.getCurrentPosition())/(double)addtTicks)*power);
             return -1;
         }
     }

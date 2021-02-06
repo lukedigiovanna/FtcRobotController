@@ -86,7 +86,7 @@ public class MainTeleOp extends LinearOpMode {
                 leftDpadClicked = false;
 
             //endregion
-            robot.relativeStrafe(drive, strafe, turn, speed, dt);
+            robot.strafe(drive, strafe, turn, speed, dt);
             robot.intake(gamepad1.right_trigger - gamepad1.left_trigger);
 
             if(gamepad1.right_bumper)

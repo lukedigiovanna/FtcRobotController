@@ -14,7 +14,7 @@ public class TurnOperation extends Operation {
 
     public void init()  {
         super.init();
-        robot.changeTurnAngle(angle);
+        robot.changeTurnAngleDegrees(angle);
     }
 
     @Override

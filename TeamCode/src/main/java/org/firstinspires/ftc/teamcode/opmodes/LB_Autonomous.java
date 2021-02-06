@@ -58,6 +58,34 @@ public class LB_Autonomous extends LinearOpMode {
                 return -1;
             }
         };
+        Operation runRollers = new Operation("loading 3rd ring", robot, 8) {
+            @Override
+            public int operate(double dt) {
+                robot.intake(1);
+                return -1;
+            }
+        };
+        Operation stopRollers = new Operation("stop rollers", robot, 1) {
+            @Override
+            public int operate(double dt) {
+                robot.intake(0);
+                return 0;
+            }
+        };
+        Operation shootRing3 = new Operation("shooting ring 3", robot, 1) {
+            @Override
+            public int operate(double dt) {
+                robot.forceLoadRing();
+                return -1;
+            }
+        };
+        Operation bringBumperBack3 = new Operation("unload ring 3", robot, 2) {
+            @Override
+            public int operate(double dt) {
+                robot.forceUnloadRing();
+                return -1;
+            }
+        };
         TurnOperation turnToLine = new TurnOperation("turning to shoot", robot, 2, -15, 0.5);
         MoveOperation goToLine = new MoveOperation("parking", robot, 14, 0.5, 10);
         Operation dropWobble = new Operation("drop wobble", robot, 4) {
@@ -75,7 +103,11 @@ public class LB_Autonomous extends LinearOpMode {
         shootRing1.linkOperation(bringBumperBack1);
         bringBumperBack1.linkOperation(shootRing2);
         shootRing2.linkOperation(bringBumperBack2);
-        bringBumperBack2.linkOperation(turnToLine);
+        bringBumperBack2.linkOperation(runRollers);
+        runRollers.linkOperation(stopRollers);
+        stopRollers.linkOperation(shootRing3);
+        shootRing3.linkOperation(bringBumperBack3);
+        bringBumperBack3.linkOperation(turnToLine);
         turnToLine.linkOperation(goToLine);
         goToLine.linkOperation(dropWobble);
         waitForStart();
