@@ -80,6 +80,8 @@ public class RobotHardware {
         this.imu.initialize(parameters);
         this.lastAngles = this.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
         this.globalAngle = 0;
+
+        this.raiseWobble();
     }
 
     public void driveWheels(double bl, double fl, double br, double fr) {
@@ -286,11 +288,11 @@ public class RobotHardware {
     }
 
     public void lowerWobble() {
-        wobbleServo.setPosition(0.2);
+        wobbleServo.setPosition(0.0);
     }
 
     public void raiseWobble() {
-        wobbleServo.setPosition(1.0);
+        wobbleServo.setPosition(0.8);
     }
 
     public void setSlidePower(double power) {
