@@ -35,6 +35,11 @@ public class RobotHardware {
 
     private double targetAngle = 0;
 
+    private double loadingTime = 0.5;
+    private double retractTime = 0;
+    private double loadedPosition = 0.0;
+    private double storingPosition = 0.5;
+
     public static double
             TICKS_PER_REV = 383.6,
             GEAR_REDUCTION = 2.0,
@@ -252,10 +257,6 @@ public class RobotHardware {
         return globalAngle;
     }
 
-    double loadingTime = 0.5;
-    double retractTime = 0;
-    double loadedPosition = 0.0;
-    double storingPosition = 0.45;
     public void loadRing(boolean load, double elapsed)  {
         if(load && retractTime < elapsed && currentFlyPower != 0)    {
             loadingServo.setPosition(loadedPosition);
@@ -292,7 +293,7 @@ public class RobotHardware {
     }
 
     public void raiseWobble() {
-        wobbleServo.setPosition(0.8);
+        wobbleServo.setPosition(0.85);
     }
 
     public void setSlidePower(double power) {

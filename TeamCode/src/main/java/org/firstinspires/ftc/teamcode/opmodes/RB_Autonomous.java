@@ -45,7 +45,7 @@ public class RB_Autonomous extends LinearOpMode {
                 return -1;
             }
         };
-        StrafeOperation strafeForMidTarget = new StrafeOperation("aiming for mid target", robot, 2, -1.0, 0.5f);
+        StrafeOperation strafeForMidTarget = new StrafeOperation("aiming for mid target", robot, 4, -1.0, 0.5f);
         Operation shootRing2 = new Operation("shooting ring 2", robot, 1) {
             @Override
             public int operate(double dt) {
@@ -60,14 +60,14 @@ public class RB_Autonomous extends LinearOpMode {
                 return -1;
             }
         };
-        Operation runRollers = new Operation("loading 3rd ring", robot, 3) {
+        Operation runRollers = new Operation("loading 3rd ring", robot, 5) {
             @Override
             public int operate(double dt) {
                 robot.intake(1);
-                return 0;
+                return -1;
             }
         };
-        StrafeOperation strafeForRightTarget = new StrafeOperation("aiming for left target", robot, 2, -1.0, 0.5f);
+        StrafeOperation strafeForRightTarget = new StrafeOperation("aiming for left target", robot, 4, -1.0, 0.5f);
         Operation shootRing3 = new Operation("shooting ring 2", robot, 1) {
             @Override
             public int operate(double dt) {
@@ -82,7 +82,6 @@ public class RB_Autonomous extends LinearOpMode {
                 return -1;
             }
         };
-        StrafeOperation strafeBack = new StrafeOperation("lining back up", robot, 2, -160, 0.5f);
         Operation turnOffFlywheel = new Operation("turning off flywheel", robot, 1) {
             @Override
             public int operate(double dt) {
@@ -90,7 +89,8 @@ public class RB_Autonomous extends LinearOpMode {
                 return 0;
             }
         };
-        MoveOperation goToLine = new MoveOperation("parking", robot, -14, 0.5, 10);
+        StrafeOperation strafeBack = new StrafeOperation("lining back up", robot, -8, -1, 0.5f);
+        MoveOperation goToLine = new MoveOperation("parking", robot, 14, 0.5, 10);
         Operation dropWobble = new Operation("drop wobble", robot, 4) {
             public int operate(double dt) {
                 robot.raiseWobble();
@@ -99,7 +99,7 @@ public class RB_Autonomous extends LinearOpMode {
         };
 
         OperationRunner opRun = new OperationRunner(moveToShoot);
-        moveToShoot.linkOperation(setFlyPower);
+                                                                                                                                                                                moveToShoot.linkOperation(setFlyPower);
         setFlyPower.linkOperation(shootRing1);
         shootRing1.linkOperation(bringBumperBack1);
         bringBumperBack1.linkOperation(strafeForMidTarget);
@@ -110,6 +110,7 @@ public class RB_Autonomous extends LinearOpMode {
         runRollers.linkOperation(shootRing3);
         shootRing3.linkOperation(bringBumperBack3);
         bringBumperBack3.linkOperation(strafeBack);
+        turnOffFlywheel.linkOperation(strafeBack);
         strafeBack.linkOperation(goToLine);
         goToLine.linkOperation(dropWobble);
         waitForStart();
