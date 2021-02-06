@@ -87,13 +87,24 @@ public class LB_Autonomous extends LinearOpMode {
                 return -1;
             }
         };
-        TurnOperation turnToLine = new TurnOperation("turning to shoot", robot, 2, -15, 0.5);
         MoveOperation goToLine = new MoveOperation("parking", robot, 14, 0.5, 10);
         Operation dropWobble = new Operation("drop wobble", robot, 4) {
             public int operate(double dt) {
                 robot.setFlywheelPower(0);
                 robot.lowerWobble();
                 return -1;
+            }
+        };
+        Operation raiseWobble = new Operation("drop wobble", robot, 1) {
+            public int operate(double dt) {
+                robot.setSlidePower(1);
+                return -1;
+            }
+        };
+        Operation stopWobble = new Operation("drop wobble", robot, 1) {
+            public int operate(double dt) {
+                robot.setSlidePower(0);
+                return 0;
             }
         };
 
@@ -110,6 +121,8 @@ public class LB_Autonomous extends LinearOpMode {
         shootRing3.linkOperation(bringBumperBack3);
         bringBumperBack3.linkOperation(goToLine);
         goToLine.linkOperation(dropWobble);
+        dropWobble.linkOperation(raiseWobble);
+        raiseWobble.linkOperation(stopWobble);
         waitForStart();
         runtime.reset();
         double last = runtime.milliseconds();
