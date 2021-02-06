@@ -93,8 +93,21 @@ public class RB_Autonomous extends LinearOpMode {
         MoveOperation goToLine = new MoveOperation("parking", robot, 14, 0.5, 10);
         Operation dropWobble = new Operation("drop wobble", robot, 4) {
             public int operate(double dt) {
-                robot.raiseWobble();
+                robot.setFlywheelPower(0);
+                robot.lowerWobble();
                 return -1;
+            }
+        };
+        Operation raiseWobble = new Operation("drop wobble", robot, 1) {
+            public int operate(double dt) {
+                robot.setSlidePower(1);
+                return -1;
+            }
+        };
+        Operation stopWobble = new Operation("drop wobble", robot, 1) {
+            public int operate(double dt) {
+                robot.setSlidePower(0);
+                return 0;
             }
         };
 
@@ -113,6 +126,8 @@ public class RB_Autonomous extends LinearOpMode {
         turnOffFlywheel.linkOperation(strafeBack);
         strafeBack.linkOperation(goToLine);
         goToLine.linkOperation(dropWobble);
+        dropWobble.linkOperation(raiseWobble);
+        raiseWobble.linkOperation(stopWobble);
         waitForStart();
         runtime.reset();
         double last = runtime.milliseconds();
