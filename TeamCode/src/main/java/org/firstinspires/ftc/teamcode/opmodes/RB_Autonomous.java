@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.operations.MoveOperation;
 import org.firstinspires.ftc.teamcode.operations.Operation;
 import org.firstinspires.ftc.teamcode.operations.OperationRunner;
+import org.firstinspires.ftc.teamcode.operations.StrafeOperation;
 import org.firstinspires.ftc.teamcode.operations.TurnOperation;
 
 @Autonomous(name="Right Blue Auto", group="Linear Opmode")
@@ -24,8 +25,6 @@ public class RB_Autonomous extends LinearOpMode {
         telemetry.update();
 
         MoveOperation moveToShoot = new MoveOperation("moving to shoot", robot, 60, 0.5, 10);
-        TurnOperation turnToGoal = new TurnOperation("turning to shoot", robot, 2, 15, 0.5);
-        moveToShoot.linkOperation(turnToGoal);
         Operation setFlyPower = new Operation("setting power", robot, 1) {
             public int operate(double dt) {
                 robot.setFlywheelPower(RobotHardware.DEFAULT_FLYWHEEL_POWER);
@@ -46,7 +45,7 @@ public class RB_Autonomous extends LinearOpMode {
                 return -1;
             }
         };
-        TurnOperation turnForMidTarget = new TurnOperation("aiming for mid target", robot, 2, -10, 0.5);
+        StrafeOperation strafeForMidTarget = new StrafeOperation("aiming for mid target", robot, 2, -1.0, 0.5f);
         Operation shootRing2 = new Operation("shooting ring 2", robot, 1) {
             @Override
             public int operate(double dt) {
@@ -68,7 +67,7 @@ public class RB_Autonomous extends LinearOpMode {
                 return 0;
             }
         };
-        TurnOperation turnForLeftTarget = new TurnOperation("aiming for left target", robot, 2, -10, 0.5);
+        StrafeOperation strafeForRightTarget = new StrafeOperation("aiming for left target", robot, 2, -1.0, 0.5f);
         Operation shootRing3 = new Operation("shooting ring 2", robot, 1) {
             @Override
             public int operate(double dt) {
@@ -83,7 +82,7 @@ public class RB_Autonomous extends LinearOpMode {
                 return -1;
             }
         };
-        TurnOperation turnToLine = new TurnOperation("turning to line", robot, 2, -160, 0.5);
+        StrafeOperation strafeBack = new StrafeOperation("lining back up", robot, 2, -160, 0.5f);
         Operation turnOffFlywheel = new Operation("turning off flywheel", robot, 1) {
             @Override
             public int operate(double dt) {
@@ -100,18 +99,18 @@ public class RB_Autonomous extends LinearOpMode {
         };
 
         OperationRunner opRun = new OperationRunner(moveToShoot);
-        turnToGoal.linkOperation(setFlyPower);
+        moveToShoot.linkOperation(setFlyPower);
         setFlyPower.linkOperation(shootRing1);
         shootRing1.linkOperation(bringBumperBack1);
-        bringBumperBack1.linkOperation(turnForMidTarget);
-        turnForMidTarget.linkOperation(shootRing2);
+        bringBumperBack1.linkOperation(strafeForMidTarget);
+        strafeForMidTarget.linkOperation(shootRing2);
         shootRing2.linkOperation(bringBumperBack2);
-        bringBumperBack2.linkOperation(turnForLeftTarget);
-        turnForLeftTarget.linkOperation(runRollers);
+        bringBumperBack2.linkOperation(strafeForRightTarget);
+        strafeForRightTarget.linkOperation(runRollers);
         runRollers.linkOperation(shootRing3);
         shootRing3.linkOperation(bringBumperBack3);
-        bringBumperBack3.linkOperation(turnToLine);
-        turnToLine.linkOperation(goToLine);
+        bringBumperBack3.linkOperation(strafeBack);
+        strafeBack.linkOperation(goToLine);
         goToLine.linkOperation(dropWobble);
         waitForStart();
         runtime.reset();
