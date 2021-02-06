@@ -38,7 +38,7 @@ public class RB_Autonomous extends LinearOpMode {
                 return -1;
             }
         };
-        Operation bringBumperBack1 = new Operation("unload ring 1", robot, 2) {
+        Operation bringBumperBack1 = new Operation("unload ring 1", robot, 1) {
             @Override
             public int operate(double dt) {
                 robot.forceUnloadRing();

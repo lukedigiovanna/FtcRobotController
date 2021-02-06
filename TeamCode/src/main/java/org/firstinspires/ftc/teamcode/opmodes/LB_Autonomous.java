@@ -52,21 +52,21 @@ public class LB_Autonomous extends LinearOpMode {
                 return -1;
             }
         };
-        Operation bringBumperBack2 = new Operation("unload ring 2", robot, 2) {
+        Operation bringBumperBack2 = new Operation("unload ring 2", robot, 1) {
             @Override
             public int operate(double dt) {
                 robot.forceUnloadRing();
                 return -1;
             }
         };
-        Operation runRollers = new Operation("loading 3rd ring", robot, 8) {
+        Operation runRollers = new Operation("loading 3rd ring", robot, 3) {
             @Override
             public int operate(double dt) {
                 robot.intake(1);
                 return -1;
             }
         };
-        Operation stopRollers = new Operation("stop rollers", robot, 1) {
+        Operation stopRollers = new Operation("stop rollers", robot, 0.2f) {
             @Override
             public int operate(double dt) {
                 robot.intake(0);
@@ -97,14 +97,14 @@ public class LB_Autonomous extends LinearOpMode {
         };
         Operation raiseWobble = new Operation("drop wobble", robot, 1) {
             public int operate(double dt) {
-                robot.setSlidePower(1);
+                robot.setSlidePower(0.5);
                 return -1;
             }
         };
-        Operation stopWobble = new Operation("drop wobble", robot, 1) {
+        Operation stopWobble = new Operation("drop wobble", robot, 0.2f) {
             public int operate(double dt) {
                 robot.setSlidePower(0);
-                return 0;
+                return -1;
             }
         };
 
@@ -123,6 +123,8 @@ public class LB_Autonomous extends LinearOpMode {
         goToLine.linkOperation(dropWobble);
         dropWobble.linkOperation(raiseWobble);
         raiseWobble.linkOperation(stopWobble);
+        stopWobble.linkOperation(new TurnOperation("test turn",robot,10, 120, 0.6));
+
         waitForStart();
         runtime.reset();
         double last = runtime.milliseconds();

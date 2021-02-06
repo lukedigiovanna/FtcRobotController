@@ -48,10 +48,6 @@ public class MoveOperation extends Operation {
     }
 
     public int operate(double dt) {
-        if (!this.robot.driveIsBusy())
-            return 0;
-        else    {
-            return -1;
-        }
+        return !this.robot.driveIsBusy() ? 0 : -1;
     }
 }

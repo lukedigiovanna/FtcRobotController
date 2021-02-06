@@ -123,6 +123,28 @@ public class RobotHardware {
 
     public double targetWaitTime = 0;
 
+    public boolean isAtTargetAngle() {
+        double robotAngle = getAngle()/180*Math.PI;
+        return getDifferenceBetweenAngles(robotAngle,targetAngle) < Math.PI/24;
+    }
+
+    public void turnToTarget(double power) {
+        if (this.isAtTargetAngle())
+            return;
+        double robotAngle = this.getAngle();
+        int dir = 1;
+        double delta = targetAngle - robotAngle;
+        if (targetAngle < robotAngle)
+            delta = 2 * Math.PI - robotAngle + targetAngle;
+        if (delta < Math.PI)
+            dir = -1;
+        double turn = power * dir;
+        backLeftDrive.setPower(turn);
+        frontLeftDrive.setPower(turn);
+        backRightDrive.setPower(-turn);
+        frontRightDrive.setPower(-turn);
+    }
+
     public void strafe(double drive, double strafe, double turn, double speed, double dt)    {
         double robotAngle = getAngle()/180*Math.PI;
         targetWaitTime += dt;
@@ -190,10 +212,10 @@ public class RobotHardware {
         frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void vectorStrafe(Vector movementVector, double turn, double power, double dt) {
@@ -281,18 +303,21 @@ public class RobotHardware {
         currentFlyPower = power;
     }
 
+    private boolean wobbleLower = false;
     public void toggleWobble() {
-        if (wobbleServo.getPosition() > 0.5)
+        if (wobbleLower)
             raiseWobble();
         else
             lowerWobble();
     }
 
     public void lowerWobble() {
+        wobbleLower = true;
         wobbleServo.setPosition(0.0);
     }
 
     public void raiseWobble() {
+        wobbleLower = false;
         wobbleServo.setPosition(0.85);
     }
 
