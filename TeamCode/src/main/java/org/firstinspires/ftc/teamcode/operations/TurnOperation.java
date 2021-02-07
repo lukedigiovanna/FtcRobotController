@@ -19,7 +19,8 @@ public class TurnOperation extends Operation {
 
     @Override
     public int operate(double dt) {
-        this.robot.turnToTarget(power);
+//        this.robot.turnToTarget(power);
+        robot.driveWheels(power,power,-power,-power); // turns
         return -1;
     }
 }

@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.operations.OperationRunner;
 import org.firstinspires.ftc.teamcode.operations.StrafeOperation;
 import org.firstinspires.ftc.teamcode.operations.TurnOperation;
 
-@Autonomous(name="Right Blue Auto", group="Linear Opmode")
-public class RB_Autonomous extends LinearOpMode {
+@Autonomous(name="Left Red Auto", group="Linear Opmode")
+public class LR_Autonomous extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     public void runOpMode() {
@@ -25,7 +25,7 @@ public class RB_Autonomous extends LinearOpMode {
         telemetry.update();
 
         MoveOperation moveToShoot = new MoveOperation("moving to shoot", robot, 60, 0.5, 10);
-        StrafeOperation toFirstShot = new StrafeOperation("moving to first shot", robot, -8, 0.8, 4);
+        StrafeOperation toFirstShot = new StrafeOperation("moving to first shot", robot, 8, 0.8, 4);
         Operation setFlyPower = new Operation("setting power", robot, 1) {
             public int operate(double dt) {
                 robot.setFlywheelPower(RobotHardware.DEFAULT_FLYWHEEL_POWER);
@@ -46,7 +46,7 @@ public class RB_Autonomous extends LinearOpMode {
                 return -1;
             }
         };
-        StrafeOperation strafeForMidTarget = new StrafeOperation("aiming for mid target", robot, 6, -1.0, 2f);
+        StrafeOperation strafeForMidTarget = new StrafeOperation("aiming for mid target", robot, -6, -1.0, 2f);
         Operation shootRing2 = new Operation("shooting ring 2", robot, 1) {
             @Override
             public int operate(double dt) {
@@ -68,7 +68,7 @@ public class RB_Autonomous extends LinearOpMode {
                 return -1;
             }
         };
-        StrafeOperation strafeForRightTarget = new StrafeOperation("aiming for left target", robot, 6, -1.0, 2f);
+        StrafeOperation strafeForRightTarget = new StrafeOperation("aiming for left target", robot, -6, -1.0, 2f);
         Operation shootRing3 = new Operation("shooting ring 3", robot, 1) {
             @Override
             public int operate(double dt) {
@@ -105,7 +105,7 @@ public class RB_Autonomous extends LinearOpMode {
                 return 0;
             }
         };
-        StrafeOperation strafeBack = new StrafeOperation("lining back up", robot, -8, -1, 0.5f);
+        StrafeOperation strafeBack = new StrafeOperation("lining back up", robot, 8, -1, 0.5f);
         MoveOperation goToLine = new MoveOperation("go to middle zone", robot, 36, 0.5, 10);
         Operation dropWobble = new Operation("drop wobble", robot, 1) {
             public int operate(double dt) {
@@ -137,6 +137,7 @@ public class RB_Autonomous extends LinearOpMode {
 
         for (int i = 0; i < operations.length-1; i++)
             operations[i].linkOperation(operations[i+1]);
+
 
         waitForStart();
         runtime.reset();

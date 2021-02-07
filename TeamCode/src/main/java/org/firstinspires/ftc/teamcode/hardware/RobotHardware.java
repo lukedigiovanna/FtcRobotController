@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
-import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -37,8 +36,8 @@ public class RobotHardware {
 
     private double loadingTime = 0.5;
     private double retractTime = 0;
-    private double loadedPosition = 0.0;
-    private double storingPosition = 0.5;
+    private double firingPosition = 0.075;
+    private double storingPosition = 0.55;
 
     public static double
             TICKS_PER_REV = 383.6,
@@ -74,7 +73,7 @@ public class RobotHardware {
         slideDrive = hardware.get(DcMotor.class, "slide_drive");
         slideDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        colorDistance = hardware.get(RevColorSensorV3.class, "color_distance");
+//        colorDistance = hardware.get(RevColorSensorV3.class, "color_distance");
 
         imu = hardware.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -111,7 +110,7 @@ public class RobotHardware {
 //
 //    }
     public void printRingDistance(Telemetry telemetry) {
-        telemetry.addData("ring distance: ",colorDistance.getDistance(DistanceUnit.INCH));
+//        telemetry.addData("ring distance: ",colorDistance.getDistance(DistanceUnit.INCH));
     }
 
     public void setProtectedPower(double bl, double fl, double br, double fr) {
@@ -255,6 +254,7 @@ public class RobotHardware {
 
     public void intake(double power)   {
         power = Range.clip(power, -1.0, 1.0);
+        power *= 0.75;
         largeRollers.setPower(power);
         smallRollers.setPower(-power);
     }
@@ -281,7 +281,7 @@ public class RobotHardware {
 
     public void loadRing(boolean load, double elapsed)  {
         if(load && retractTime < elapsed && currentFlyPower != 0)    {
-            loadingServo.setPosition(loadedPosition);
+            loadingServo.setPosition(firingPosition);
             retractTime = elapsed + loadingTime;
         }
         else if(retractTime < elapsed)    {
@@ -290,7 +290,7 @@ public class RobotHardware {
     }
 
     public void forceLoadRing() {
-        loadingServo.setPosition(loadedPosition);
+        loadingServo.setPosition(firingPosition);
     }
 
     public void forceUnloadRing() {

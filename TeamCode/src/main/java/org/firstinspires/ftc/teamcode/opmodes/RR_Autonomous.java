@@ -22,7 +22,7 @@ public class RR_Autonomous extends LinearOpMode {
         telemetry.update();
 
         MoveOperation moveToShoot = new MoveOperation("moving to shoot", robot, 60, 0.5, 10);
-        StrafeOperation strafeToShoot = new StrafeOperation("strafing to shoot", robot, -8, 0.5, 10);
+        StrafeOperation strafeToShoot = new StrafeOperation("strafing to shoot", robot, -22, 0.5, 10);
         Operation setFlyPower = new Operation("setting power", robot, 1) {
             public int operate(double dt) {
                 robot.setFlywheelPower(RobotHardware.DEFAULT_FLYWHEEL_POWER);
@@ -50,21 +50,21 @@ public class RR_Autonomous extends LinearOpMode {
                 return -1;
             }
         };
-        Operation bringBumperBack2 = new Operation("unload ring 2", robot, 2) {
+        Operation bringBumperBack2 = new Operation("unload ring 2", robot, 1) {
             @Override
             public int operate(double dt) {
                 robot.forceUnloadRing();
                 return -1;
             }
         };
-        Operation runRollers = new Operation("loading 3rd ring", robot, 8) {
+        Operation runRollers = new Operation("loading 3rd ring", robot, 3) {
             @Override
             public int operate(double dt) {
                 robot.intake(1);
                 return -1;
             }
         };
-        Operation stopRollers = new Operation("stop rollers", robot, 1) {
+        Operation stopRollers = new Operation("stop rollers", robot, 0.2f) {
             @Override
             public int operate(double dt) {
                 robot.intake(0);
@@ -78,51 +78,45 @@ public class RR_Autonomous extends LinearOpMode {
                 return -1;
             }
         };
-        Operation bringBumperBack3 = new Operation("unload ring 3", robot, 2) {
+        Operation bringBumperBack3 = new Operation("unload ring 3", robot, 1) {
             @Override
             public int operate(double dt) {
                 robot.forceUnloadRing();
                 return -1;
             }
         };
-        MoveOperation goToLine = new MoveOperation("parking", robot, 14, 0.5, 10);
-        TurnOperation turnAround = new TurnOperation("turning around real quick cuh", robot, 3, 180, 0.75);
-        Operation dropWobble = new Operation("drop wobble", robot, 4) {
+        MoveOperation goToZone = new MoveOperation("to zone", robot, 36, 0.6, 10);
+        Operation dropWobble = new Operation("drop wobble", robot, 1) {
             public int operate(double dt) {
                 robot.setFlywheelPower(0);
                 robot.lowerWobble();
                 return -1;
             }
         };
-        Operation raiseWobble = new Operation("drop wobble", robot, 1) {
+        Operation raiseWobble = new Operation("raise slide", robot, 1) {
             public int operate(double dt) {
-                robot.setSlidePower(1);
+                robot.setSlidePower(0.5);
                 return -1;
             }
         };
-        Operation stopWobble = new Operation("drop wobble", robot, 1) {
+        Operation stopWobble = new Operation("stop slide", robot, 0.2f) {
             public int operate(double dt) {
                 robot.setSlidePower(0);
                 return 0;
             }
         };
+        Operation toLine = new MoveOperation("parking", robot, -22, 0.6, 5f);
 
         OperationRunner opRun = new OperationRunner(moveToShoot);
-        moveToShoot.linkOperation(strafeToShoot);
-        strafeToShoot.linkOperation(setFlyPower);
-        setFlyPower.linkOperation(shootRing1);
-        shootRing1.linkOperation(bringBumperBack1);
-        bringBumperBack1.linkOperation(shootRing2);
-        shootRing2.linkOperation(bringBumperBack2);
-        bringBumperBack2.linkOperation(runRollers);
-        runRollers.linkOperation(stopRollers);
-        stopRollers.linkOperation(shootRing3);
-        shootRing3.linkOperation(bringBumperBack3);
-        bringBumperBack3.linkOperation(goToLine);
-        goToLine.linkOperation(turnAround);
-        turnAround.linkOperation(dropWobble);
-        dropWobble.linkOperation(raiseWobble);
-        raiseWobble.linkOperation(stopWobble);
+
+        Operation[] operations = {
+          moveToShoot, strafeToShoot, setFlyPower, shootRing1, bringBumperBack1, shootRing2, bringBumperBack2, runRollers,
+          stopRollers, shootRing3, bringBumperBack3, goToZone, dropWobble,  raiseWobble, stopWobble, toLine
+        };
+
+        for (int i = 0; i < operations.length - 1; i++)
+            operations[i].linkOperation(operations[i+1]);
+
         waitForStart();
         runtime.reset();
         double last = runtime.milliseconds();

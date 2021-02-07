@@ -66,13 +66,6 @@ public class LB_Autonomous extends LinearOpMode {
                 return -1;
             }
         };
-        Operation stopRollers = new Operation("stop rollers", robot, 0.2f) {
-            @Override
-            public int operate(double dt) {
-                robot.intake(0);
-                return 0;
-            }
-        };
         Operation shootRing3 = new Operation("shooting ring 3", robot, 1) {
             @Override
             public int operate(double dt) {
@@ -84,6 +77,21 @@ public class LB_Autonomous extends LinearOpMode {
             @Override
             public int operate(double dt) {
                 robot.forceUnloadRing();
+                return -1;
+            }
+        };
+        Operation shootRing4 = new Operation("shooting ring 4", robot, 1) {
+            @Override
+            public int operate(double dt) {
+                robot.forceLoadRing();
+                return -1;
+            }
+        };
+        Operation bringBumperBack4 = new Operation("unload ring 4", robot, 2) {
+            @Override
+            public int operate(double dt) {
+                robot.forceUnloadRing();
+                robot.intake(0);
                 return -1;
             }
         };
@@ -109,21 +117,22 @@ public class LB_Autonomous extends LinearOpMode {
         };
 
         OperationRunner opRun = new OperationRunner(moveToShoot);
-        moveToShoot.linkOperation(strafeToShoot);
+        moveToShoot.linkOperation(setFlyPower);
         strafeToShoot.linkOperation(setFlyPower);
         setFlyPower.linkOperation(shootRing1);
         shootRing1.linkOperation(bringBumperBack1);
         bringBumperBack1.linkOperation(shootRing2);
         shootRing2.linkOperation(bringBumperBack2);
         bringBumperBack2.linkOperation(runRollers);
-        runRollers.linkOperation(stopRollers);
-        stopRollers.linkOperation(shootRing3);
+        runRollers.linkOperation(shootRing3);
+//        stopRollers.linkOperation(shootRing3);
         shootRing3.linkOperation(bringBumperBack3);
-        bringBumperBack3.linkOperation(goToLine);
+        bringBumperBack3.linkOperation(shootRing4);
+        shootRing4.linkOperation(bringBumperBack4);
+        bringBumperBack4.linkOperation(goToLine);
         goToLine.linkOperation(dropWobble);
         dropWobble.linkOperation(raiseWobble);
         raiseWobble.linkOperation(stopWobble);
-        stopWobble.linkOperation(new TurnOperation("test turn",robot,10, 120, 0.6));
 
         waitForStart();
         runtime.reset();
