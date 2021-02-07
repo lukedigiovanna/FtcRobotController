@@ -22,7 +22,6 @@ public class RR_Autonomous extends LinearOpMode {
         telemetry.update();
 
         MoveOperation moveToShoot = new MoveOperation("moving to shoot", robot, 60, 0.5, 10);
-        StrafeOperation strafeToShoot = new StrafeOperation("strafing to shoot", robot, -22, 0.5, 10);
         Operation setFlyPower = new Operation("setting power", robot, 1) {
             public int operate(double dt) {
                 robot.setFlywheelPower(RobotHardware.DEFAULT_FLYWHEEL_POWER);
@@ -86,6 +85,13 @@ public class RR_Autonomous extends LinearOpMode {
             }
         };
         MoveOperation goToZone = new MoveOperation("to zone", robot, 36, 0.6, 10);
+        Operation turnAround = new Operation("turning around rq cuh", robot, 2f) {
+            @Override
+            public int operate(double dt) {
+                robot.driveWheels(1, 1, -1, -1);
+                return -1;
+            }
+        };
         Operation dropWobble = new Operation("drop wobble", robot, 1) {
             public int operate(double dt) {
                 robot.setFlywheelPower(0);
@@ -105,13 +111,13 @@ public class RR_Autonomous extends LinearOpMode {
                 return 0;
             }
         };
-        Operation toLine = new MoveOperation("parking", robot, -22, 0.6, 5f);
+        Operation toLine = new MoveOperation("parking", robot, 22, 0.6, 5f);
 
         OperationRunner opRun = new OperationRunner(moveToShoot);
 
         Operation[] operations = {
-          moveToShoot, strafeToShoot, setFlyPower, shootRing1, bringBumperBack1, shootRing2, bringBumperBack2, runRollers,
-          stopRollers, shootRing3, bringBumperBack3, goToZone, dropWobble,  raiseWobble, stopWobble, toLine
+          moveToShoot, setFlyPower, shootRing1, bringBumperBack1, shootRing2, bringBumperBack2, runRollers,
+          stopRollers, shootRing3, bringBumperBack3, goToZone, turnAround, dropWobble,  raiseWobble, stopWobble, toLine
         };
 
         for (int i = 0; i < operations.length - 1; i++)

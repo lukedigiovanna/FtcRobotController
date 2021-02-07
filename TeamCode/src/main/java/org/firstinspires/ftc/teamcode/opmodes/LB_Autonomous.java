@@ -24,7 +24,6 @@ public class LB_Autonomous extends LinearOpMode {
         telemetry.update();
 
         MoveOperation moveToShoot = new MoveOperation("moving to shoot", robot, 60, 0.5, 10);
-        StrafeOperation strafeToShoot = new StrafeOperation("strafing to shoot", robot, 8, 0.5, 10);
         Operation setFlyPower = new Operation("setting power", robot, 1) {
             public int operate(double dt) {
                 robot.setFlywheelPower(RobotHardware.DEFAULT_FLYWHEEL_POWER);
@@ -118,7 +117,6 @@ public class LB_Autonomous extends LinearOpMode {
 
         OperationRunner opRun = new OperationRunner(moveToShoot);
         moveToShoot.linkOperation(setFlyPower);
-        strafeToShoot.linkOperation(setFlyPower);
         setFlyPower.linkOperation(shootRing1);
         shootRing1.linkOperation(bringBumperBack1);
         bringBumperBack1.linkOperation(shootRing2);
