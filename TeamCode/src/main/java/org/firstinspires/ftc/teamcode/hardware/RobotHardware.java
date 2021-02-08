@@ -45,7 +45,7 @@ public class RobotHardware {
             WHEEL_DIAMETER_INCHES = 3.858,
             TICKS_PER_INCH = (TICKS_PER_REV * GEAR_REDUCTION)/(WHEEL_DIAMETER_INCHES * Math.PI);
 
-    public static final double DEFAULT_FLYWHEEL_POWER = -0.75;
+    public static final double DEFAULT_FLYWHEEL_POWER = -0.825;
 
     public RobotHardware(HardwareMap hardware) {
         frontLeftDrive  = hardware.get(DcMotor.class, "front_left_chassis");
@@ -280,7 +280,7 @@ public class RobotHardware {
     }
 
     public void loadRing(boolean load, double elapsed)  {
-        if(load && retractTime < elapsed && currentFlyPower != 0)    {
+        if(load && retractTime < elapsedt5)    {
             loadingServo.setPosition(firingPosition);
             retractTime = elapsed + loadingTime;
         }

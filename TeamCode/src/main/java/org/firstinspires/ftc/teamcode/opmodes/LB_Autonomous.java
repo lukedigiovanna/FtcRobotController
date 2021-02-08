@@ -24,7 +24,7 @@ public class LB_Autonomous extends LinearOpMode {
         telemetry.update();
 
         MoveOperation moveToShoot = new MoveOperation("moving to shoot", robot, 60, 0.5, 10);
-        StrafeOperation strafeToShoot = new StrafeOperation("strafing to shoot", robot, 8, 0.5, 10);
+        StrafeOperation strafeToShoot = new StrafeOperation("strafing to shoot", robot, 4, 0.5, 10);
         Operation setFlyPower = new Operation("setting power", robot, 1) {
             public int operate(double dt) {
                 robot.setFlywheelPower(RobotHardware.DEFAULT_FLYWHEEL_POWER);
@@ -87,7 +87,22 @@ public class LB_Autonomous extends LinearOpMode {
                 return -1;
             }
         };
-        Operation bringBumperBack4 = new Operation("unload ring 4", robot, 2) {
+        Operation bringBumperBack4 = new Operation("unload ring 4", robot, 1) {
+            @Override
+            public int operate(double dt) {
+                robot.forceUnloadRing();
+                robot.intake(0);
+                return -1;
+            }
+        };
+        Operation shootRing5 = new Operation("shooting ring 5", robot, 1) {
+            @Override
+            public int operate(double dt) {
+                robot.forceLoadRing();
+                return -1;
+            }
+        };
+        Operation bringBumperBack5 = new Operation("unload ring 5", robot, 1) {
             @Override
             public int operate(double dt) {
                 robot.forceUnloadRing();
@@ -96,7 +111,7 @@ public class LB_Autonomous extends LinearOpMode {
             }
         };
         MoveOperation goToLine = new MoveOperation("parking", robot, 14, 0.5, 10);
-        Operation dropWobble = new Operation("drop wobble", robot, 4) {
+        Operation dropWobble = new Operation("drop wobble", robot, 2) {
             public int operate(double dt) {
                 robot.setFlywheelPower(0);
                 robot.lowerWobble();
@@ -118,7 +133,7 @@ public class LB_Autonomous extends LinearOpMode {
 
         OperationRunner opRun = new OperationRunner(moveToShoot);
         moveToShoot.linkOperation(setFlyPower);
-        strafeToShoot.linkOperation(setFlyPower);
+//        strafeToShoot.linkOperation(setFlyPower);
         setFlyPower.linkOperation(shootRing1);
         shootRing1.linkOperation(bringBumperBack1);
         bringBumperBack1.linkOperation(shootRing2);
@@ -129,7 +144,9 @@ public class LB_Autonomous extends LinearOpMode {
         shootRing3.linkOperation(bringBumperBack3);
         bringBumperBack3.linkOperation(shootRing4);
         shootRing4.linkOperation(bringBumperBack4);
-        bringBumperBack4.linkOperation(goToLine);
+        bringBumperBack4.linkOperation(shootRing5);
+        shootRing5.linkOperation(bringBumperBack5);
+        bringBumperBack5.linkOperation(goToLine);
         goToLine.linkOperation(dropWobble);
         dropWobble.linkOperation(raiseWobble);
         raiseWobble.linkOperation(stopWobble);
