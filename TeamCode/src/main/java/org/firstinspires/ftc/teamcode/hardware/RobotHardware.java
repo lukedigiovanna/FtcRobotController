@@ -280,7 +280,7 @@ public class RobotHardware {
     }
 
     public void loadRing(boolean load, double elapsed)  {
-        if(load && retractTime < elapsedt5)    {
+        if(load && retractTime < elapsed)    {
             loadingServo.setPosition(firingPosition);
             retractTime = elapsed + loadingTime;
         }
