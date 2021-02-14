@@ -86,7 +86,7 @@ public class RR_Autonomous extends LinearOpMode {
             }
         };
         MoveOperation goToZone = new MoveOperation("to zone", robot, 36, 0.6, 10);
-        TurnOperation turnAround = new TurnOperation("turn", robot, 2.5f, 1000, 0.6);
+        TurnOperation turnAround = new TurnOperation("turn", robot, 2.5f, 1000, 0.6f);
         Operation dropWobble = new Operation("drop wobble", robot, 1) {
             public int operate(double dt) {
                 robot.setFlywheelPower(0);

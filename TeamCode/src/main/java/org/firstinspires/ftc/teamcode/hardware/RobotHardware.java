@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -15,9 +16,25 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.utils.Vector;
+
+import java.util.List;
+
 // Epic Code ✅✅✅
 public class RobotHardware {
+    private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
+    private static final String LABEL_FIRST_ELEMENT = "Quad";
+    private static final String LABEL_SECOND_ELEMENT = "Single";
+
+    private static final String VUFORIA_KEY =
+            "Ac2AtL3/////AAABmYlEA5vrzUAniNdkaz817jg5a+xF1YvwBoaBFx+vfaoen8b7Lc/Paztzjnd1sdgsk6wIkrl5cNjZPf06xjN3DiUFwor9Va5+Dvl+JgYtaPWnCyKshUYEyIfXPnuYZQHlx2PNAp19T7QLPo1+Ks/GLK6Hi+z9bkt7Xdj91Ts9cw3U0NNK70YkR8RqakswKy673hKimeZblke+pKR94EOIQs+V99sua2mAcfBliwjSZxlyP7FCI+55kaCVYMi7+qYEmVl4D4NGi86VDyQzyG5rBYvOgaE4v8PXNSmkQH1BlV88WdOXEgvRvWmQoOMpFZ28bsuEmL6vz8fa9m4gdABsyO8AYPIOz6Lh+xalVXMmMln4";
+
+    private VuforiaLocalizer vuforia;
+
+    private TFObjectDetector tfod;
 
     public DcMotor backLeftDrive, backRightDrive, frontRightDrive, frontLeftDrive;
     private DcMotor flywheel;
@@ -47,7 +64,12 @@ public class RobotHardware {
 
     public static final double DEFAULT_FLYWHEEL_POWER = -0.825;
 
+    private double targetFlywheelPower = -0.9;
+
     public RobotHardware(HardwareMap hardware) {
+        this.initVuforia();
+        this.initTfod(hardware);
+
         frontLeftDrive  = hardware.get(DcMotor.class, "front_left_chassis");
         frontRightDrive = hardware.get(DcMotor.class, "front_right_chassis");
         backLeftDrive  = hardware.get(DcMotor.class, "back_left_chassis");
@@ -130,7 +152,7 @@ public class RobotHardware {
     public void turnToTarget(double power) {
         if (this.isAtTargetAngle())
             return;
-        double robotAngle = this.getAngle();
+        double robotAngle = this.getAngle()/180.0*Math.PI;
         int dir = 1;
         double delta = targetAngle - robotAngle;
         if (targetAngle < robotAngle)
@@ -145,7 +167,7 @@ public class RobotHardware {
     }
 
     public void strafe(double drive, double strafe, double turn, double speed, double dt)    {
-        double robotAngle = getAngle()/180*Math.PI;
+        double robotAngle = getAngle()/180.0*Math.PI;
         targetWaitTime += dt;
         if (turn != 0) {
             targetWaitTime = 0;
@@ -170,21 +192,38 @@ public class RobotHardware {
         this.driveWheels(backLeftPower, frontLeftPower, backRightPower, frontRightPower);
     }
 
-    public void changeTurnAngle(double angle, double dt) {
-        changeTurnAngle(angle * dt);
+    private void restrictAngleDomain() {
+        // restrict between [0, 2pi)
+        while (this.targetAngle < 0)
+            targetAngle += Math.PI * 2;
+        while (this.targetAngle >= 2 * Math.PI)
+            targetAngle -= Math.PI * 2;
     }
 
     public void changeTurnAngle(double angle) {
         this.targetAngle += angle;
-        // restrict between [0, 2pi)
-        while (this.targetAngle < 0)
-            targetAngle += Math.PI * 2;
-        while (this.targetAngle > 2 * Math.PI)
-            targetAngle -= Math.PI * 2;
+        this.restrictAngleDomain();
     }
 
     public void changeTurnAngleDegrees(double degrees) {
         changeTurnAngle(Math.toRadians(degrees));
+    }
+
+    /**
+     * Sets the target angle of the robot to be whatever the current angle of the robot is
+     */
+    public void clearTargetAngle() {
+        this.targetAngle = Math.toRadians(this.getAngle());
+        this.restrictAngleDomain();
+    }
+
+    public void setTargetAngleDegrees(double degrees) {
+        this.setTargetAngleRadians(Math.toRadians(degrees));
+    }
+
+    public void setTargetAngleRadians(double radians) {
+        this.targetAngle = radians;
+        this.restrictAngleDomain();
     }
 
     public void driveForward(double power) {
@@ -215,11 +254,6 @@ public class RobotHardware {
         frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    }
-
-    public void vectorStrafe(Vector movementVector, double turn, double power, double dt) {
-        movementVector.normalize();
-        this.relativeStrafe(movementVector.y, movementVector.x, turn, power, dt);
     }
 
     public void relativeStrafe(double drive, double strafe, double turn, double power, double dt) {
@@ -259,6 +293,10 @@ public class RobotHardware {
         smallRollers.setPower(-power);
     }
 
+    /**
+     * Returns the current angle of the robot from IMU sensor in DEGREES
+     * @return
+     */
     public double getAngle() {
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
 
@@ -339,5 +377,89 @@ public class RobotHardware {
 
         double theta = Math.acos(Math.cos(angle1)*Math.cos(angle2)+Math.sin(angle1)*Math.sin(angle2));
         return theta;
+    }
+
+    public double getTargetFlywheelPower() {
+        return this.targetFlywheelPower;
+    }
+
+    public void setTargetFlywheelPower(double power) {
+        this.targetFlywheelPower = power;
+    }
+
+    /**
+     * Initialize the Vuforia localization engine.
+     */
+    private void initVuforia() {
+        /*
+         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+         */
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+
+        //  Instantiate the Vuforia engine
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
+    }
+
+    public String getDetection() {
+        if (tfod != null) {
+            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+            if (updatedRecognitions != null) {
+                if (updatedRecognitions.size() == 0)
+                    return "none";
+                Recognition recognition = updatedRecognitions.get(0);
+                return recognition.getLabel();
+            } else {
+                return "none";
+            }
+        } else {
+            return "no tfod!";
+        }
+    }
+
+    /**
+     * Initialize the TensorFlow Object Detection engine.
+     */
+    private void initTfod(HardwareMap hardwareMap) {
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minResultConfidence = 0.4f;
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+        tfod.activate();
+//        tfod.setZoom(2.5, 16.0/9.0);
+    }
+
+    public static final int ZOOM_LEFT_BLUE = 0, ZOOM_RIGHT_BLUE = 1, ZOOM_LEFT_RED = 2, ZOOM_RIGHT_RED = 3;
+
+    public void setTfodZoom(int zoomLocation) {
+//        tfod.
+    }
+
+    public void closeTfod() {
+        if (tfod != null)
+            tfod.shutdown();
+    }
+
+    /**
+     * Prints information about the current state of the robot
+     *  - current angle
+     *  - target angle
+     *  - tfod current detection
+     *  - encoder positions
+     * @param telemetry
+     */
+    public void printInformation(Telemetry telemetry) {
+        telemetry.addData("Robot Angle",this.getAngle());
+        telemetry.addData("Target Angle", Math.toDegrees(this.targetAngle));
+        telemetry.addData("Current Object",this.getDetection());
+        telemetry.addData("Target Flywheel Power",this.getTargetFlywheelPower());
+        telemetry.addData("","Encoder Positions:");
+        printEncoderPositions(telemetry);
     }
 }

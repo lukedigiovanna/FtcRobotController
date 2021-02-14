@@ -5,19 +5,20 @@ import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
 /**
  * Operations to turn the robot to a specific target angle.
  */
-public class TurnOperation extends Operation {
+public class RelativeTurnOperation extends Operation {
 
     double angle;
     double power;
-    public TurnOperation(String displayName, RobotHardware robot, double targetAngle, double power, float maxRuntime)  {
+    public RelativeTurnOperation(String displayName, RobotHardware robot, double deltaAngle, double power, float maxRuntime)  {
         super(displayName, robot, maxRuntime);
-        this.angle = -targetAngle;
+        this.angle = deltaAngle;
         this.power = power;
     }
 
     public void init()  {
         super.init();
-        robot.setTargetAngleDegrees(angle);
+        robot.clearTargetAngle();
+        robot.changeTurnAngleDegrees(angle);
     }
 
     @Override
