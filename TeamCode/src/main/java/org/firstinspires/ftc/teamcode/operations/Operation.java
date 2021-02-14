@@ -11,14 +11,13 @@ public abstract class Operation {
     private String displayName;
     private float maxRuntime;
     private Timer timer;
-    protected RobotHardware robot;
+    protected static RobotHardware robot;
 
-    public Operation(String displayName, RobotHardware robot, float maxRuntime, Operation... futureOps) {
+    public Operation(String displayName, float maxRuntime, Operation... futureOps) {
         this.displayName = displayName;
         this.maxRuntime = maxRuntime;
         this.linkedOperations = new ArrayList<Operation>();
         this.timer = new Timer();
-        this.robot = robot;
         for(Operation op : futureOps)
             linkedOperations.add(op);
     }
@@ -63,5 +62,9 @@ public abstract class Operation {
 
     public String getDisplayName() {
         return this.displayName;
+    }
+
+    public static void setRobot(RobotHardware robot) {
+        Operation.robot = robot;
     }
 }
