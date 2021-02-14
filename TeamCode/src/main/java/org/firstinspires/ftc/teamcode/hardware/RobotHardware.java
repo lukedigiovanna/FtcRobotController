@@ -36,7 +36,7 @@ public class RobotHardware {
 
     private double loadingTime = 0.5;
     private double retractTime = 0;
-    private double firingPosition = 0.1;
+    private double firingPosition = 0.075;
     private double storingPosition = 0.55;
 
     public static double
@@ -45,7 +45,7 @@ public class RobotHardware {
             WHEEL_DIAMETER_INCHES = 3.858,
             TICKS_PER_INCH = (TICKS_PER_REV * GEAR_REDUCTION)/(WHEEL_DIAMETER_INCHES * Math.PI);
 
-    public static final double DEFAULT_FLYWHEEL_POWER = -0.875;
+    public static final double DEFAULT_FLYWHEEL_POWER = -0.825;
 
     public RobotHardware(HardwareMap hardware) {
         frontLeftDrive  = hardware.get(DcMotor.class, "front_left_chassis");
@@ -254,7 +254,7 @@ public class RobotHardware {
 
     public void intake(double power)   {
         power = Range.clip(power, -1.0, 1.0);
-        power *= 0.9;
+        power *= 0.75;
         largeRollers.setPower(power);
         smallRollers.setPower(-power);
     }
@@ -280,7 +280,7 @@ public class RobotHardware {
     }
 
     public void loadRing(boolean load, double elapsed)  {
-        if(load && retractTime < elapsed && currentFlyPower != 0)    {
+        if(load && retractTime < elapsed)    {
             loadingServo.setPosition(firingPosition);
             retractTime = elapsed + loadingTime;
         }

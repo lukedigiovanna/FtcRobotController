@@ -1,11 +1,8 @@
 package org.firstinspires.ftc.teamcode.operations;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.robot.Robot;
 
-import org.firstinspires.ftc.teamcode.hardware.MainRobotDep;
 import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
-import org.firstinspires.ftc.teamcode.hardware.RobotHardwareDep;
 
 public class StrafeOperation extends Operation {
     private double inches, power;
