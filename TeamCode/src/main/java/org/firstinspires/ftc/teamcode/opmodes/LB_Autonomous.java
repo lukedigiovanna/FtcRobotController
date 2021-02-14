@@ -17,23 +17,65 @@ import org.firstinspires.ftc.teamcode.operations.TurnOperation;
 public class LB_Autonomous extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
+    //region Detect dropzone
+    Operation turnToReadRings;
+    //endregion
+
+    //region Moving firing position
+    Operation
+    moveToShoot,
+    strafeToShoot;
+    //endregion
+
+    //region Shooting rings
+    Operation
+    setFlywheelPower,
+    shootRing1,
+    bringBumperBack1,
+    shootRing2,
+    bringBumperBack2,
+    runRollers,
+    stopRollers,
+    shootRing3,
+    bringBumperBack3,
+    stopFlywheel;
+    //endregion
+
+    //region Closest dropzone
+    Operation strafeLeftToDropzone;
+    //endregion
+
+    //region Mid dropzone
+    Operation moveToZone;
+    //endregion
+
+    //region Far dropzone
+    Operation
+    turnToFaceZone,
+    driveToZone;
+    //endregion
+
+    //region Drop wobble
+    Operation
+    dropWobble,
+    raiseWobble,
+    retractWobble;
+    //endregion
+
+    //region Parking
+    Operation parkOnLineFarZone;
+    Operation parkOnLineMidZone;
+    //endregion
+
     public void runOpMode() {
         RobotHardware robot = new RobotHardware(this.hardwareMap);
-
+        Operation.setRobot(robot);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        Operation move = new MoveOperation("moving", robot, 20, 0.6, 10f);
-        Operation turn = new TurnOperation("turn", robot, 90, 0.6, 99f);
+        moveToShoot = new MoveOperation("Moving to firing position", 60, 0.5, 10, strafeToShoot);
 
-        OperationRunner opRun = new OperationRunner(move);
-
-        Operation[] operations = {move, turn};
-
-        for (int i = 0; i < operations.length - 1; i++)
-            operations[i].linkOperation(operations[i+1]);
-
-
+        OperationRunner opRun = new OperationRunner(moveToShoot);
         waitForStart();
         runtime.reset();
         double last = runtime.milliseconds();
@@ -47,7 +89,7 @@ public class LB_Autonomous extends LinearOpMode {
 
             opRun.operate(robot, dt);
 
-            robot.printInformation(telemetry);
+            robot.printEncoderPositions(telemetry);
             telemetry.addData("Runner Status",opRun.getCurrentDisplay());
 
             telemetry.update();

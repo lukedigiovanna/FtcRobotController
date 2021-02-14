@@ -30,6 +30,7 @@ public class TestTele extends LinearOpMode {
 
     Servo loadingServo;
     double loadingTime = 3;
+    double retractTime = 0;
     double loadingPosition = 1;
     double storingPosition = 0;
     
@@ -37,7 +38,7 @@ public class TestTele extends LinearOpMode {
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        
+
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
@@ -48,10 +49,8 @@ public class TestTele extends LinearOpMode {
         largeRoller = hardwareMap.get(DcMotor.class, "large_roller");
         smallRoller = hardwareMap.get(DcMotor.class, "small_roller");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
-        
+
         loadingServo = hardwareMap.get(Servo.class, "reload_servo");
-        double retractTime = 0;
-        double loadingTime = 2;
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -83,10 +82,12 @@ public class TestTele extends LinearOpMode {
             double turn     = gamepad1.right_stick_x;
             double strafe   = gamepad1.left_stick_x;
             double speed;
-            if(gamepad1.left_stick_button)
+            if(gamepad1.left_stick_button) {
                 speed = driveSpeed;
-            else
+            }
+            else {
                 speed = slowSpeed;
+            }
 
             frontLeftPower  = Range.clip((drive + turn + strafe) * speed, -1.0, 1.0);
             frontRightPower = Range.clip((drive - turn + strafe) * speed, -1.0, 1.0);
@@ -105,11 +106,13 @@ public class TestTele extends LinearOpMode {
             backRightDrive.setPower(backRightPower);
             largeRoller.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
             smallRoller.setPower(gamepad1.left_trigger - gamepad1.right_trigger);
-            if(gamepad1.right_bumper)
+            if(gamepad1.right_bumper) {
                 flywheel.setPower(flywheelSpeed);
-            else
+            }
+            else {
                 flywheel.setPower(0);
-                
+            }
+
             if(gamepad1.left_bumper)    {
                 loadingServo.setPosition(loadingPosition);
                 retractTime = runtime.seconds() + loadingTime;
