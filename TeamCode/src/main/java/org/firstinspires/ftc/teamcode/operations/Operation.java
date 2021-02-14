@@ -13,14 +13,15 @@ public abstract class Operation {
     private Timer timer;
     protected RobotHardware robot;
 
-    public Operation(String displayName, RobotHardware robot, float maxRuntime) {
+    public Operation(String displayName, RobotHardware robot, float maxRuntime, Operation... futureOps) {
         this.displayName = displayName;
         this.maxRuntime = maxRuntime;
         this.linkedOperations = new ArrayList<Operation>();
         this.timer = new Timer();
         this.robot = robot;
+        for(Operation op : futureOps)
+            linkedOperations.add(op);
     }
-
     /**
      * Returns true if there is at least one linked operation
      * @return

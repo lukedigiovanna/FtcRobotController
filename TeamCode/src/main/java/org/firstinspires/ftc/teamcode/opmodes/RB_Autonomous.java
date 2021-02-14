@@ -24,7 +24,13 @@ public class RB_Autonomous extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        MoveOperation moveToShoot = new MoveOperation("moving to shoot", robot, 60, 0.5, 10);
+        MoveOperation moveToLine = new MoveOperation("moving to shoot", robot, 60, 0.5, 10);
+        Operation lineUpWithLine = new Operation("lining up", robot, 1) {
+            public int operate(double dt) {
+                robot.setFlywheelPower(RobotHardware.DEFAULT_FLYWHEEL_POWER);
+                return -1;
+            }
+        };
         StrafeOperation toFirstShot = new StrafeOperation("moving to first shot", robot, -8, 0.8, 4);
         Operation setFlyPower = new Operation("setting power", robot, 1) {
             public int operate(double dt) {
@@ -126,10 +132,10 @@ public class RB_Autonomous extends LinearOpMode {
             }
         };
 
-        OperationRunner opRun = new OperationRunner(moveToShoot);
+        OperationRunner opRun = new OperationRunner(moveToLine);
 
         Operation[] operations = {
-                moveToShoot, toFirstShot, setFlyPower, shootRing1, bringBumperBack1, strafeForMidTarget,
+                moveToLine, toFirstShot, setFlyPower, shootRing1, bringBumperBack1, strafeForMidTarget,
                 shootRing2, bringBumperBack2, runRollers, strafeForRightTarget,
                 shootRing3, bringBumperBack3, shootRing4, bringBumperBack4, turnOffFlywheel,
                 strafeBack, goToLine, dropWobble, raiseWobble, stopWobble

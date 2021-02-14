@@ -11,8 +11,8 @@ public class StrafeOperation extends Operation {
     private double inches, power;
     private int addtTicks;
 
-    public StrafeOperation(String display, RobotHardware robot, double inches, double power, float timeout) {
-        super(display, robot, timeout);
+    public StrafeOperation(String display, RobotHardware robot, double inches, double power, float maxRuntime) {
+        super(display, robot, maxRuntime);
         this.power = power;
         this.inches = inches;
         this.addtTicks = (int)(this.inches * RobotHardware.TICKS_PER_INCH);

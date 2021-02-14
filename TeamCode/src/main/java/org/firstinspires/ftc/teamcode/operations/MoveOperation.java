@@ -11,8 +11,8 @@ public class MoveOperation extends Operation {
     private double inches, power;
     private int addtTicks;
 
-    public MoveOperation(String display, RobotHardware robot, double inches, double power, float timeout) {
-        super(display, robot, timeout);
+    public MoveOperation(String display, RobotHardware robot, double inches, double power, float maxRuntime, Operation... futureOps) {
+        super(display, robot, maxRuntime, futureOps);
         this.power = power;
         this.inches = inches;
         this.addtTicks = (int)(this.inches * RobotHardware.TICKS_PER_INCH);

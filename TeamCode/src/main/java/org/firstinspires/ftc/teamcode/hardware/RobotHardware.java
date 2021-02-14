@@ -25,7 +25,7 @@ public class RobotHardware {
     private DcMotor slideDrive;
     private Servo loadingServo, wobbleServo;
 
-    private RevColorSensorV3 colorDistance;
+    public RevColorSensorV3 colorDistance;
 
     // IMU
     private BNO055IMU imu;
@@ -73,7 +73,7 @@ public class RobotHardware {
         slideDrive = hardware.get(DcMotor.class, "slide_drive");
         slideDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-//        colorDistance = hardware.get(RevColorSensorV3.class, "color_distance");
+        colorDistance = hardware.get(RevColorSensorV3.class, "color_distance");
 
         imu = hardware.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();

@@ -6,8 +6,8 @@ public class TurnOperation extends Operation {
 
     double angle;
     double power;
-    public TurnOperation(String displayName, RobotHardware robot, float maxRuntime, double angle, double power)  {
-        super(displayName, robot, maxRuntime);
+    public TurnOperation(String displayName, RobotHardware robot, double angle, double power, float maxRuntime, Operation... futureOps)  {
+        super(displayName, robot, maxRuntime, futureOps);
         this.angle = angle;
         this.power = power;
     }
