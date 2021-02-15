@@ -95,7 +95,7 @@ public class RobotHardware {
         slideDrive = hardware.get(DcMotor.class, "slide_drive");
         slideDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        colorDistance = hardware.get(RevColorSensorV3.class, "color_distance");
+        //colorDistance = hardware.get(RevColorSensorV3.class, "color_distance");
 
         imu = hardware.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -172,7 +172,7 @@ public class RobotHardware {
         if (turn != 0) {
             targetWaitTime = 0;
         }
-        if (targetWaitTime < 0.25)
+        if (targetWaitTime < 0.5)
             this.targetAngle = robotAngle;
         double fixTurn = 0;
         if (drive == 0 && strafe == 0 && getDifferenceBetweenAngles(robotAngle,targetAngle) > Math.PI/24) {

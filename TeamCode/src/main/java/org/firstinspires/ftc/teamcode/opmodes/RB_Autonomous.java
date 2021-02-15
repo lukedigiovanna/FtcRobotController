@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.operations.Operation;
 import org.firstinspires.ftc.teamcode.operations.OperationRunner;
 import org.firstinspires.ftc.teamcode.operations.StrafeOperation;
 import org.firstinspires.ftc.teamcode.operations.TurnOperation;
+import org.firstinspires.ftc.teamcode.operations.WaitOperation;
 
 @Autonomous(name="Right Blue Auto", group="Linear Opmode")
 public class RB_Autonomous extends LinearOpMode {
@@ -24,125 +25,8 @@ public class RB_Autonomous extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        MoveOperation moveToLine = new MoveOperation("moving to shoot", robot, 60, 0.5, 10);
-        Operation lineUpWithLine = new Operation("lining up", robot, 1) {
-            public int operate(double dt) {
-                robot.setFlywheelPower(RobotHardware.DEFAULT_FLYWHEEL_POWER);
-                return -1;
-            }
-        };
-        StrafeOperation toFirstShot = new StrafeOperation("moving to first shot", robot, -8, 0.8, 4);
-        Operation setFlyPower = new Operation("setting power", robot, 1) {
-            public int operate(double dt) {
-                robot.setFlywheelPower(RobotHardware.DEFAULT_FLYWHEEL_POWER);
-                return -1;
-            }
-        };
-        Operation shootRing1 = new Operation("shooting ring 1", robot, 1) {
-            @Override
-            public int operate(double dt) {
-                robot.forceLoadRing();
-                return -1;
-            }
-        };
-        Operation bringBumperBack1 = new Operation("unload ring 1", robot, 1) {
-            @Override
-            public int operate(double dt) {
-                robot.forceUnloadRing();
-                return -1;
-            }
-        };
-        StrafeOperation strafeForMidTarget = new StrafeOperation("aiming for mid target", robot, 6, -1.0, 2f);
-        Operation shootRing2 = new Operation("shooting ring 2", robot, 1) {
-            @Override
-            public int operate(double dt) {
-                robot.forceLoadRing();
-                return -1;
-            }
-        };
-        Operation bringBumperBack2 = new Operation("unload ring 2", robot, 1) {
-            @Override
-            public int operate(double dt) {
-                robot.forceUnloadRing();
-                return -1;
-            }
-        };
-        Operation runRollers = new Operation("loading 3rd ring", robot, 2.5f) {
-            @Override
-            public int operate(double dt) {
-                robot.intake(1);
-                return -1;
-            }
-        };
-        StrafeOperation strafeForRightTarget = new StrafeOperation("aiming for left target", robot, 6, -1.0, 2f);
-        Operation shootRing3 = new Operation("shooting ring 3", robot, 1) {
-            @Override
-            public int operate(double dt) {
-                robot.forceLoadRing();
-                return -1;
-            }
-        };
-        Operation bringBumperBack3 = new Operation("unload ring 3", robot, 1) {
-            @Override
-            public int operate(double dt) {
-                robot.forceUnloadRing();
-                return -1;
-            }
-        };
-        Operation shootRing4 = new Operation("shooting ring 4", robot, 1) {
-            @Override
-            public int operate(double dt) {
-                robot.forceLoadRing();
-                return -1;
-            }
-        };
-        Operation bringBumperBack4 = new Operation("unload ring 4", robot, 1) {
-            @Override
-            public int operate(double dt) {
-                robot.forceUnloadRing();
-                return -1;
-            }
-        };
-        Operation turnOffFlywheel = new Operation("turning off flywheel", robot, 1) {
-            @Override
-            public int operate(double dt) {
-                robot.setFlywheelPower(0);
-                robot.intake(0);
-                return 0;
-            }
-        };
-        StrafeOperation strafeBack = new StrafeOperation("lining back up", robot, -8, -1, 0.5f);
-        MoveOperation goToLine = new MoveOperation("go to middle zone", robot, 36, 0.5, 10);
-        Operation dropWobble = new Operation("drop wobble", robot, 1) {
-            public int operate(double dt) {
-                robot.lowerWobble();
-                return -1;
-            }
-        };
-        Operation raiseWobble = new Operation("raise slide", robot, 1) {
-            public int operate(double dt) {
-                robot.setSlidePower(1);
-                return -1;
-            }
-        };
-        Operation stopWobble = new Operation("stop slide", robot, 1) {
-            public int operate(double dt) {
-                robot.setSlidePower(0);
-                return 0;
-            }
-        };
 
-        OperationRunner opRun = new OperationRunner(moveToLine);
-
-        Operation[] operations = {
-                moveToLine, toFirstShot, setFlyPower, shootRing1, bringBumperBack1, strafeForMidTarget,
-                shootRing2, bringBumperBack2, runRollers, strafeForRightTarget,
-                shootRing3, bringBumperBack3, shootRing4, bringBumperBack4, turnOffFlywheel,
-                strafeBack, goToLine, dropWobble, raiseWobble, stopWobble
-        };
-
-        for (int i = 0; i < operations.length-1; i++)
-            operations[i].linkOperation(operations[i+1]);
+        OperationRunner opRun = new OperationRunner(new WaitOperation(5f, null));
 
         waitForStart();
         runtime.reset();

@@ -9,8 +9,8 @@ public class RelativeTurnOperation extends Operation {
 
     double angle;
     double power;
-    public RelativeTurnOperation(String displayName, RobotHardware robot, double deltaAngle, double power, float maxRuntime)  {
-        super(displayName, robot, maxRuntime);
+    public RelativeTurnOperation(String displayName, RobotHardware robot, double deltaAngle, double power, float maxRuntime, Operation... futureOps)  {
+        super(displayName, maxRuntime, futureOps);
         this.angle = deltaAngle;
         this.power = power;
     }

@@ -48,14 +48,16 @@ public class MainTeleOp extends LinearOpMode {
             //region 90 degree turns
 
             if(gamepad1.dpad_right && !rightDpadClicked)    {
-                robot.changeTurnAngle(-Math.PI/2);
+//                robot.changeTurnAngle(-Math.PI/2);
+                robot.setTargetFlywheelPower(robot.getTargetFlywheelPower() - 0.01);
                 rightDpadClicked = true;
             }
             else if (!gamepad1.dpad_right)
                 rightDpadClicked = false;
 
             if(gamepad1.dpad_left && !leftDpadClicked)    {
-                robot.changeTurnAngle(Math.PI/2);
+//                robot.changeTurnAngle(Math.PI/2);
+                robot.setTargetFlywheelPower(robot.getTargetFlywheelPower() + 0.01);
                 leftDpadClicked = true;
             }
             else if (!gamepad1.dpad_left)
@@ -79,13 +81,15 @@ public class MainTeleOp extends LinearOpMode {
             }
             else if (!gamepad1.y) yDown = false;
 
+            if (gamepad1.a) {
+                robot.setTargetAngleDegrees(0);
+            }
+
             robot.setSlidePower(0);
             if (gamepad1.dpad_up) {
-//                robot.setSlidePower(1);
-                robot.setTargetFlywheelPower(robot.getTargetFlywheelPower() + 0.01);
+                robot.setSlidePower(1);
             } else if (gamepad1.dpad_down) {
-//                robot.setSlidePower(-1);
-                robot.setTargetFlywheelPower(robot.getTargetFlywheelPower() - 0.01);
+                robot.setSlidePower(-1);
             }
 
             robot.printRingDistance(telemetry);
