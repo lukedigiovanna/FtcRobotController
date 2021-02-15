@@ -18,7 +18,10 @@ public class LB_Autonomous extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     //region Detect dropzone
-    Operation turnToReadRings;
+    Operation
+    turnToReadRings,
+    readRings,
+    faceLine;
     //endregion
 
     //region Moving firing position
@@ -73,9 +76,10 @@ public class LB_Autonomous extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        //turnToReadRings = new TurnOperation()
         moveToShoot = new MoveOperation("Moving to firing position", 60, 0.5, 10, strafeToShoot);
 
-        OperationRunner opRun = new OperationRunner(moveToShoot);
+        OperationRunner opRun = new OperationRunner(turnToReadRings);
         waitForStart();
         runtime.reset();
         double last = runtime.milliseconds();
