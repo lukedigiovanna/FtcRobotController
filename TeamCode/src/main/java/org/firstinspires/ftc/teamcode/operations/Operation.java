@@ -56,6 +56,10 @@ public abstract class Operation {
         return this.timer.elapsed() >= this.maxRuntime;
     }
 
+    public float getPercentElapsed() {
+        return this.timer.elapsed() / this.maxRuntime;
+    }
+
     public Operation get(int index) {
         return linkedOperations.get(index);
     }

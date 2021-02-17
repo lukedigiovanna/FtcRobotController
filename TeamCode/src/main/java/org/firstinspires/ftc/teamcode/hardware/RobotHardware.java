@@ -144,9 +144,21 @@ public class RobotHardware {
 
     public double targetWaitTime = 0;
 
+    private static final double ANGLE_THRESHOLD = Math.PI/24;
+
+    public void setTargetAngleThreshold(double threshold) {
+        this.angleThreshold = threshold;
+    }
+
+    public void resetTargetAngleThreshold() {
+        this.angleThreshold = ANGLE_THRESHOLD;
+    }
+
+    private double angleThreshold = ANGLE_THRESHOLD;
+
     public boolean isAtTargetAngle() {
         double robotAngle = getAngle()/180*Math.PI;
-        return getDifferenceBetweenAngles(robotAngle,targetAngle) < Math.PI/24;
+        return getDifferenceBetweenAngles(robotAngle,targetAngle) < this.angleThreshold;
     }
 
     public void turnToTarget(double power) {
@@ -417,7 +429,7 @@ public class RobotHardware {
                 return "none";
             }
         } else {
-            return "no tfod!";
+            return "none";
         }
     }
 
@@ -428,7 +440,7 @@ public class RobotHardware {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minResultConfidence = 0.4f;
+        tfodParameters.minResultConfidence = 0.8f;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
         tfod.activate();
@@ -457,7 +469,7 @@ public class RobotHardware {
     public void printInformation(Telemetry telemetry) {
         telemetry.addData("Robot Angle",this.getAngle());
         telemetry.addData("Target Angle", Math.toDegrees(this.targetAngle));
-        telemetry.addData("Current Object",this.getDetection());
+        telemetry.addData("Current Object","'"+this.getDetection()+"'");
         telemetry.addData("Target Flywheel Power",this.getTargetFlywheelPower());
         telemetry.addData("","Encoder Positions:");
         printEncoderPositions(telemetry);

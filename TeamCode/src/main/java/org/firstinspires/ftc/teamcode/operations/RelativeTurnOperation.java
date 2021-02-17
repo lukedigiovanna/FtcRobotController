@@ -9,7 +9,7 @@ public class RelativeTurnOperation extends Operation {
 
     double angle;
     double power;
-    public RelativeTurnOperation(String displayName, RobotHardware robot, double deltaAngle, double power, float maxRuntime, Operation... futureOps)  {
+    public RelativeTurnOperation(String displayName, double deltaAngle, double power, float maxRuntime, Operation... futureOps)  {
         super(displayName, maxRuntime, futureOps);
         this.angle = deltaAngle;
         this.power = power;
@@ -23,7 +23,7 @@ public class RelativeTurnOperation extends Operation {
 
     @Override
     public int operate(double dt) {
-        this.robot.turnToTarget(power);
-        return this.robot.isAtTargetAngle() ? 0 : -1;
+        robot.turnToTarget(power);
+        return robot.isAtTargetAngle() ? 0 : -1;
     }
 }

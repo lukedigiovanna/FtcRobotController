@@ -26,7 +26,7 @@ public class RB_Autonomous extends LinearOpMode {
         telemetry.update();
 
 
-        OperationRunner opRun = new OperationRunner(new WaitOperation(5f, null));
+        OperationRunner opRun = new OperationRunner(new WaitOperation("",5f, null));
 
         waitForStart();
         runtime.reset();

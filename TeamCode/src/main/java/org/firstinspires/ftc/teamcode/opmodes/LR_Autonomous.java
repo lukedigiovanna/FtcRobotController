@@ -27,7 +27,7 @@ public class LR_Autonomous extends LinearOpMode {
 
 
 
-        OperationRunner opRun = new OperationRunner(new WaitOperation(5f, null));
+        OperationRunner opRun = new OperationRunner(new WaitOperation("nothing",5f, null));
 
         waitForStart();
         runtime.reset();
