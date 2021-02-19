@@ -20,11 +20,11 @@ public class DetectOperation extends Operation {
      * @return
      */
     public int operate(double dt) {
-        if (this.robot.getDetection().equals("Quad"))
-            this.curStack = "Quad";
-        if (this.robot.getDetection().equals("Single"))
+        if (robot.getDetection().equals("quad"))
+            this.curStack = "quad";
+        if (robot.getDetection().equals("single"))
             return 1;
-        else if (this.curStack.equals("Quad") && this.getPercentElapsed() > 0.9)
+        else if (this.curStack.equals("quad") && this.getPercentElapsed() > 0.9)
             return 2;
         else
             return -1;

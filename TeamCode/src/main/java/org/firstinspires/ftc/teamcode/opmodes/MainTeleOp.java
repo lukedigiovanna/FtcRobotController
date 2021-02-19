@@ -3,12 +3,26 @@ package org.firstinspires.ftc.teamcode.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+/**
+ * CONTROLS:
+ *   LEFT JOY STICK - STRAFING
+ *   RIGHT JOY STICK - ZERO TURNING
+ *   Y - MOVE FORWARD (RELATIVE TO ROBOT ORIENTATION)
+ *   A - MOVE BACKWARD (RELATIVE TO ROBOT ORIENTATION)
+ *   X - TOGGLE THE WOBBLE
+ *   B - SET THE ROBOTS ORIENTATION TO 0 DEGREES
+ *   LEFT D-PAD - DECREASE FLYWHEEL POWER
+ *   RIGHT D-PAD - INCREASE FLYWHEEL POWER
+ *   DOWN D-PAD - LOWER SLIDE
+ *   UP D-PAD - RAISE SLIDE
+ *   RIGHT TRIGGER - ACTIVATE INTAKE
+ *   LEFT TRIGGER - ACTIVATE OUTTAKE
+ *   RIGHT BUMPER - ACTIVATE FLYWHEEL
+ *   LEFT BUMPER - SHOOT RING
+ */
 @TeleOp(name="Main tele",group="Linear Opmode")
 public class MainTeleOp extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
@@ -19,8 +33,10 @@ public class MainTeleOp extends LinearOpMode {
 
     boolean rightDpadClicked = false;
     boolean leftDpadClicked = false;
-    boolean yDown = false;
-    
+    boolean bDown = false;
+
+    double flywheelPowerDelta = 0;
+
     public void runOpMode() {
         RobotHardware robot = new RobotHardware(this.hardwareMap);
 
@@ -48,24 +64,37 @@ public class MainTeleOp extends LinearOpMode {
             //region 90 degree turns
 
             if(gamepad1.dpad_right && !rightDpadClicked)    {
-//                robot.changeTurnAngle(-Math.PI/2);
-                robot.setTargetFlywheelPower(robot.getTargetFlywheelPower() - 0.01);
+                flywheelPowerDelta -= 0.01;
+//                robot.setTargetFlywheelPower(robot.getTargetFlywheelPower() - 0.01);
                 rightDpadClicked = true;
             }
             else if (!gamepad1.dpad_right)
                 rightDpadClicked = false;
 
             if(gamepad1.dpad_left && !leftDpadClicked)    {
-//                robot.changeTurnAngle(Math.PI/2);
-                robot.setTargetFlywheelPower(robot.getTargetFlywheelPower() + 0.01);
+                flywheelPowerDelta += 0.01;
+//                robot.setTargetFlywheelPower(robot.getTargetFlywheelPower() + 0.01);
                 leftDpadClicked = true;
             }
             else if (!gamepad1.dpad_left)
                 leftDpadClicked = false;
 
+            robot.setTargetFlywheelPower(robot.getRecommendedFlywheelPower() + flywheelPowerDelta);
+
+            double forward = 0;
+            if (gamepad1.a)
+                forward-=1.0;
+            if (gamepad1.y)
+                forward+=1.0;
+
+
             //endregion
-            robot.strafe(drive, strafe, turn, speed, dt);
-//            robot.relativeStrafe(drive, strafe, turn, speed, dt);
+//            robot.strafe(drive, strafe, turn, speed, dt);
+            if (forward == 0)
+                robot.relativeStrafe(drive, strafe, turn, speed, dt);
+            else
+                robot.strafe(forward, 0, 0, 0.8, dt);
+
             robot.intake(gamepad1.right_trigger - gamepad1.left_trigger);
 
             if(gamepad1.right_bumper)
@@ -75,13 +104,13 @@ public class MainTeleOp extends LinearOpMode {
 
             robot.loadRing(gamepad1.left_bumper, runtime.seconds());
 
-            if (!yDown && gamepad1.y) {
-                yDown = true;
+            if (!bDown && gamepad1.b) {
+                bDown = true;
                 robot.toggleWobble();
             }
-            else if (!gamepad1.y) yDown = false;
+            else if (!gamepad1.b) bDown = false;
 
-            if (gamepad1.a) {
+            if (gamepad1.x) {
                 robot.setTargetAngleDegrees(0);
             }
 
@@ -92,7 +121,6 @@ public class MainTeleOp extends LinearOpMode {
                 robot.setSlidePower(-1);
             }
 
-            robot.printRingDistance(telemetry);
 
             telemetry.update();
         }

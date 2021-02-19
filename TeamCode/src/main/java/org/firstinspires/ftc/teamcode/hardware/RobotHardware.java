@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -50,6 +51,7 @@ public class RobotHardware {
     private double globalAngle;
 
     private double targetAngle = 0;
+    private static final double ANGLE_THRESHOLD = Math.toRadians(5.0);
 
     private double loadingTime = 0.5;
     private double retractTime = 0;
@@ -66,9 +68,13 @@ public class RobotHardware {
 
     private double targetFlywheelPower = -0.9;
 
+    private VoltageSensor voltageSensor;
+
     public RobotHardware(HardwareMap hardware) {
         this.initVuforia();
         this.initTfod(hardware);
+
+        voltageSensor = hardware.voltageSensor.get("Expansion Hub 1");
 
         frontLeftDrive  = hardware.get(DcMotor.class, "front_left_chassis");
         frontRightDrive = hardware.get(DcMotor.class, "front_right_chassis");
@@ -128,23 +134,8 @@ public class RobotHardware {
         }
     }
 
-//    public String getRingType() {
-//
-//    }
-    public void printRingDistance(Telemetry telemetry) {
-//        telemetry.addData("ring distance: ",colorDistance.getDistance(DistanceUnit.INCH));
-    }
-
-    public void setProtectedPower(double bl, double fl, double br, double fr) {
-        frontLeftDrive.setPower(Range.clip(protect(bl),-1.0,1.0));
-        backLeftDrive.setPower(Range.clip(protect(fl),-1.0,1.0));
-        frontRightDrive.setPower(Range.clip(protect(br),-1.0,1.0));
-        backRightDrive.setPower(Range.clip(protect(fr),-1.0,1.0));
-    }
 
     public double targetWaitTime = 0;
-
-    private static final double ANGLE_THRESHOLD = Math.PI/24;
 
     public void setTargetAngleThreshold(double threshold) {
         this.angleThreshold = threshold;
@@ -236,10 +227,6 @@ public class RobotHardware {
     public void setTargetAngleRadians(double radians) {
         this.targetAngle = radians;
         this.restrictAngleDomain();
-    }
-
-    public void driveForward(double power) {
-        driveWheels(power, power, power, power);
     }
 
     public boolean driveIsBusy() {
@@ -423,8 +410,14 @@ public class RobotHardware {
             if (updatedRecognitions != null) {
                 if (updatedRecognitions.size() == 0)
                     return "none";
-                Recognition recognition = updatedRecognitions.get(0);
-                return recognition.getLabel();
+                String label = "none";
+                for (Recognition r : updatedRecognitions) {
+                    if (r.getLabel().equals("Quad"))
+                        label = "quad";
+                    else if (r.getLabel().equals("Single"))
+                        return "single";
+                }
+                return label;
             } else {
                 return "none";
             }
@@ -453,6 +446,28 @@ public class RobotHardware {
 //        tfod.
     }
 
+    public double getVoltage() {
+        return this.voltageSensor.getVoltage();
+    }
+
+    public double getRecommendedFlywheelPower() {
+        double voltage = getVoltage();
+        if (voltage > 13.6)
+            return -0.81;
+        else if (voltage > 13.4)
+            return -0.82;
+        else if (voltage > 12.8)
+            return -0.83;
+        else if (voltage > 12.6)
+            return -0.85;
+        else if (voltage > 12.4)
+            return -0.88;
+        else if (voltage > 12.0)
+            return -0.94;
+        else
+            return -1.0;
+    }
+
     public void closeTfod() {
         if (tfod != null)
             tfod.shutdown();
@@ -467,10 +482,12 @@ public class RobotHardware {
      * @param telemetry
      */
     public void printInformation(Telemetry telemetry) {
+        telemetry.addData("Voltage",this.getVoltage());
         telemetry.addData("Robot Angle",this.getAngle());
         telemetry.addData("Target Angle", Math.toDegrees(this.targetAngle));
         telemetry.addData("Current Object","'"+this.getDetection()+"'");
         telemetry.addData("Target Flywheel Power",this.getTargetFlywheelPower());
+        telemetry.addData("Recommended FP",this.getRecommendedFlywheelPower());
         telemetry.addData("","Encoder Positions:");
         printEncoderPositions(telemetry);
     }

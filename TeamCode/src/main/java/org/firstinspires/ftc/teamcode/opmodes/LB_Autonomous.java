@@ -58,18 +58,20 @@ public class LB_Autonomous extends LinearOpMode {
 
         // operations to drop the wobble in the SINGLE STACK ZONE
         Operation ss_toLaunch = new MoveOperation("To launch line (ss)", -28, 0.7, 10f, powerFlywheel);
-        Operation ss_turnAroundToLaunch = new TurnOperation("Turn Around (ss)", 0, 0.55, 10f, ss_toLaunch);
+        Operation ss_turnAroundToLaunch = new TurnOperation("Turn Around (ss)", 0, 0.75, 10f, ss_toLaunch);
         Operation ss_lowerSlide = new LowerSlideOperation(ss_turnAroundToLaunch);
         Operation ss_raiseSlide = new RaiseSlideOperation(ss_lowerSlide);
         Operation ss_lowerWobble = new LowerWobbleOperation(ss_raiseSlide);
-//        Operation ss_realign = new StrictTurnOperation("Realignment (ss)", 0, 0.25, 10f, ss_lowerWobble);
-        Operation ss_turnAround = new TurnOperation("Turn Around (ss)", 180, 0.55, 10f, ss_lowerWobble);
+        Operation ss_realign = new StrictTurnOperation("Realignment (qs)", 0, 0.25, 10f, ss_lowerWobble);
+        Operation ss_turnAround = new TurnOperation("Turn Around (ss)", 180, 0.75, 10f, ss_realign );
         Operation ss_strafeRight = new StrafeOperation("Away from wall (ss)", 16, 0.6, 10, ss_turnAround);
         Operation ss_moveToZone = new MoveOperation("Moving to zone (ss)", 72, 0.7, 10, ss_strafeRight);
         Operation ss_turnToLine = new TurnOperation("Turning to line (ss)", 0, 0.65, 10 , ss_moveToZone);
 
         // operations to drop the wobble in the QUADRUPLE STACK ZONE
-        Operation qs_toLaunch = new MoveOperation("To launch line (qs)", -58, 0.7, 10f, powerFlywheel);
+        Operation qs_realign2 = new StrictTurnOperation("Realignment 2 (qs)", 0, 0.4, 10f, powerFlywheel);
+        Operation qs_strafeLeft = new StrafeOperation("Towards wall (qs)", -6, 0.6, 10f, qs_realign2);
+        Operation qs_toLaunch = new MoveOperation("To launch line (qs)", -58, 0.7, 10f, qs_strafeLeft);
         Operation qs_lowerSlide = new LowerSlideOperation(qs_toLaunch);
         Operation qs_raiseSlide = new RaiseSlideOperation(qs_lowerSlide);
         Operation qs_lowerWobble = new LowerWobbleOperation(qs_raiseSlide);
