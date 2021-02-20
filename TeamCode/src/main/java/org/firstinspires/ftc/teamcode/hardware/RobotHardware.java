@@ -43,8 +43,6 @@ public class RobotHardware {
     private DcMotor slideDrive;
     private Servo loadingServo, wobbleServo;
 
-    public RevColorSensorV3 colorDistance;
-
     // IMU
     private BNO055IMU imu;
     private Orientation lastAngles;
@@ -57,6 +55,8 @@ public class RobotHardware {
     private double retractTime = 0;
     private double firingPosition = 0.075;
     private double storingPosition = 0.55;
+
+    private double shootingTargetAngle = 0;
 
     public static double
             TICKS_PER_REV = 383.6,
@@ -178,14 +178,15 @@ public class RobotHardware {
         if (targetWaitTime < 0.5)
             this.targetAngle = robotAngle;
         double fixTurn = 0;
-        if (drive == 0 && strafe == 0 && getDifferenceBetweenAngles(robotAngle,targetAngle) > Math.PI/24) {
+        double angDifference = getDifferenceBetweenAngles(robotAngle,targetAngle);
+        if (drive == 0 && strafe == 0 && angDifference > Math.PI/24) {
             int dir = 1;
             double delta = targetAngle - robotAngle;
             if (targetAngle < robotAngle)
                 delta = 2 * Math.PI - robotAngle + targetAngle;
             if (delta < Math.PI)
                 dir = -1;
-            fixTurn = 0.7 * dir;
+            fixTurn = (angDifference/Math.PI * 0.6 + 0.3) * dir;
         }
         turn += fixTurn;
         double backLeftPower   = Range.clip((drive + turn + strafe) * speed, -1.0, 1.0);
@@ -285,11 +286,29 @@ public class RobotHardware {
         this.strafe(drive, strafe, turn, power, dt);
     }
 
+    public double getTargetShootingPosition() {
+        return this.shootingTargetAngle;
+    }
+
     public void intake(double power)   {
         power = Range.clip(power, -1.0, 1.0);
         power *= 0.75;
         largeRollers.setPower(power);
         smallRollers.setPower(-power);
+    }
+
+    public void singleIntake(double power) {
+        power = Range.clip(power, -1.0, 1.0);
+        power *= 0.75;
+        largeRollers.setPower(power);
+    }
+
+    public void setAngleOffset(double offset) {
+        while (offset < 0)
+            offset += 360;
+        offset %= 360;
+        this.globalAngle = offset;
+        this.shootingTargetAngle = offset;
     }
 
     /**
@@ -452,7 +471,9 @@ public class RobotHardware {
 
     public double getRecommendedFlywheelPower() {
         double voltage = getVoltage();
-        if (voltage > 13.6)
+        if (voltage > 14.0)
+            return -0.79;
+        else if (voltage > 13.6)
             return -0.81;
         else if (voltage > 13.4)
             return -0.82;
@@ -463,9 +484,9 @@ public class RobotHardware {
         else if (voltage > 12.4)
             return -0.88;
         else if (voltage > 12.0)
-            return -0.94;
+            return -0.91;
         else
-            return -1.0;
+            return -0.94;
     }
 
     public void closeTfod() {

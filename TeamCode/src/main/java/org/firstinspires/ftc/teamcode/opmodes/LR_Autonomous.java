@@ -8,9 +8,16 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
+import org.firstinspires.ftc.teamcode.operations.ActivateFlywheelOperation;
+import org.firstinspires.ftc.teamcode.operations.ActivateIntakeOperation;
+import org.firstinspires.ftc.teamcode.operations.DeactivateFlywheelOperation;
+import org.firstinspires.ftc.teamcode.operations.LoadRingOperation;
+import org.firstinspires.ftc.teamcode.operations.LowerWobbleOperation;
 import org.firstinspires.ftc.teamcode.operations.MoveOperation;
 import org.firstinspires.ftc.teamcode.operations.Operation;
 import org.firstinspires.ftc.teamcode.operations.OperationRunner;
+import org.firstinspires.ftc.teamcode.operations.RaiseWobbleOperation;
+import org.firstinspires.ftc.teamcode.operations.ShootRingOperation;
 import org.firstinspires.ftc.teamcode.operations.StrafeOperation;
 import org.firstinspires.ftc.teamcode.operations.TurnOperation;
 import org.firstinspires.ftc.teamcode.operations.WaitOperation;
@@ -21,13 +28,37 @@ public class LR_Autonomous extends LinearOpMode {
 
     public void runOpMode() {
         RobotHardware robot = new RobotHardware(this.hardwareMap);
+        Operation.setRobot(robot);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        Operation putBumperBack = new LoadRingOperation();
+        Operation park = new MoveOperation("Parking", 15, 0.6, 10f, putBumperBack);
+        Operation straight = new TurnOperation("Straight", 0, 0.6, 10f, park);
+        Operation stopFlywheel = new DeactivateFlywheelOperation(straight);
+        Operation shootRing5 = new ShootRingOperation(stopFlywheel);
+        Operation loadRing5 = new LoadRingOperation(shootRing5);
+        Operation shootRing4 = new ShootRingOperation(loadRing5);
+        Operation loadRing4 = new LoadRingOperation(shootRing4);
+        Operation shootRing3 = new ShootRingOperation(loadRing4);
+        Operation loadRing3 = new LoadRingOperation(shootRing3);
+        Operation waitFor3 = new WaitOperation("Waiting", 3.0f, loadRing3);
+        Operation activateIntake = new ActivateIntakeOperation(waitFor3);
+        Operation shootRing2 = new ShootRingOperation(activateIntake);
+        Operation loadRing2 = new LoadRingOperation(shootRing2);
+        Operation shootRing1 = new ShootRingOperation(loadRing2);
+        Operation powerFlywheel = new ActivateFlywheelOperation(shootRing1);
 
+        Operation turnLeft = new TurnOperation("Turn towards goal", 20, 0.5, 10f, powerFlywheel);
+        Operation goBack = new MoveOperation("To Launch Line", -40, 0.65, 10f, turnLeft);
+        Operation turnAround2 = new TurnOperation("Turn Around", 0, 0.6, 10f, goBack);
+        Operation raiseWobble = new RaiseWobbleOperation(turnAround2);
+        Operation lowerWobble = new LowerWobbleOperation(raiseWobble);
+        Operation turnAround1 = new TurnOperation("Turn Around", 180, 0.7, 10f, lowerWobble);
+        Operation moveToZone = new MoveOperation("Move to B zone", 104, 0.65, 10f, turnAround1);
 
-        OperationRunner opRun = new OperationRunner(new WaitOperation("nothing",5f, null));
+        OperationRunner opRun = new OperationRunner(moveToZone);
 
         waitForStart();
         runtime.reset();
@@ -42,8 +73,8 @@ public class LR_Autonomous extends LinearOpMode {
 
             opRun.operate(robot, dt);
 
-            robot.printEncoderPositions(telemetry);
             telemetry.addData("Runner Status",opRun.getCurrentDisplay());
+            robot.printInformation(telemetry);
 
             telemetry.update();
         }

@@ -34,23 +34,21 @@ public class RB_Autonomous extends LinearOpMode {
         telemetry.update();
 
         Operation putBumperBack = new LoadRingOperation();
-        Operation park = new MoveOperation("Parking", 15, 0.6, 10f, putBumperBack);
-        Operation straight = new TurnOperation("Straight", 0, 0.6, 10f, park);
-        Operation stopFlywheel = new DeactivateFlywheelOperation(straight);
-        Operation shootRing5 = new ShootRingOperation(stopFlywheel);
-        Operation loadRing5 = new LoadRingOperation(shootRing5);
-        Operation shootRing4 = new ShootRingOperation(loadRing5);
-        Operation loadRing4 = new LoadRingOperation(shootRing4);
+        Operation park = new MoveOperation("Parking", 15, 1.0, 10f, putBumperBack);
+        Operation stopFlywheel = new DeactivateFlywheelOperation(park);
+        Operation shootRing4 = new ShootRingOperation(stopFlywheel);
+        Operation waitFor3 = new WaitOperation("Waiting", 1.0f, shootRing4);
+        Operation activateIntake = new ActivateIntakeOperation(waitFor3);
+        Operation loadRing4 = new LoadRingOperation(activateIntake);
         Operation shootRing3 = new ShootRingOperation(loadRing4);
         Operation loadRing3 = new LoadRingOperation(shootRing3);
-        Operation waitFor3 = new WaitOperation("Waiting", 3.0f, loadRing3);
-        Operation activateIntake = new ActivateIntakeOperation(waitFor3);
-        Operation shootRing2 = new ShootRingOperation(activateIntake);
+        Operation shootRing2 = new ShootRingOperation(loadRing3);
         Operation loadRing2 = new LoadRingOperation(shootRing2);
         Operation shootRing1 = new ShootRingOperation(loadRing2);
-        Operation powerFlywheel = new ActivateFlywheelOperation(shootRing1);
+        Operation straight = new TurnOperation("Straight", 0, 0.6, 10f, shootRing1);
+        Operation powerFlywheel = new ActivateFlywheelOperation(straight);
 
-        Operation turnLeft = new TurnOperation("Turn towards goal", 340, 0.5, 10f, powerFlywheel);
+        Operation turnLeft = new TurnOperation("Turn towards goal", 344, 0.5, 10f, powerFlywheel);
         Operation goBack = new MoveOperation("To Launch Line", -40, 0.65, 10f, turnLeft);
         Operation raiseWobble = new RaiseWobbleOperation(goBack);
         Operation lowerWobble = new LowerWobbleOperation(raiseWobble);
